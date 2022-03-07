@@ -3,7 +3,7 @@ import Item from "./Item";
 import items from "../set5patch1115/items.json";
 import iconPath from "../iconPaths";
 
-function Items() {
+function Items(props) {
 
     // create new array excluding component items (ids 1-9)
     const completedItems = items.filter((item) => {
@@ -20,9 +20,10 @@ function Items() {
                 return (
                     <Item 
                         key={item.id}
-                        id={item.id}
-                        name={item.name}
                         iconPath={itemIcons[item.id]}
+                        itemInfo={item}
+                        appHandleDrop={props.appHandleDrop}
+                        appHandleDrag={props.appHandleDrag}
                     />
                 );
             })}

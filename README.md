@@ -1,3 +1,15 @@
+# TFT Team Builder
+
+TFT Team Builder is a team composition tool designed for planning out different board states for Teamfight Tactics. Units can be placed on the board and be equipped with items while active synergies update based on the units that are fielded.
+
+This tool is being developed as a personal project and is not intended for extensive use. It is currently leveraging only the static data from the ["Reckoning: Dawn of Heroes"](https://developer.riotgames.com/docs/tft#static-data) set by Riot Games. The tool may be expanded to leverage static data from other previous sets in the future.
+
+## Riot Games Legal Boilerplate
+
+TFT Team Builder was created under Riot Games' "Legal Jibber Jabber" policy using assets owned by Riot Games.  Riot Games does not endorse or sponsor this project.
+
+TFT Team Builder isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -68,3 +80,4 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+

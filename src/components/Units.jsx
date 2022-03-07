@@ -3,7 +3,7 @@ import Unit from "./Unit"
 import units from "../set5patch1115/champions.json";
 import iconPath from "../iconPaths";
 
-function Units() {
+function Units(props) {
 
     // require.context call to generate a context module of unit icon paths;
     // iconMapper function call to save object of unit icon path mappings to unitIcons
@@ -15,11 +15,10 @@ function Units() {
                 return (
                     <Unit 
                         key={unit.championId}
-                        id={unit.championId}
-                        name={unit.name} 
-                        cost={unit.cost} 
                         iconPath={unitIcons[unit.championId]}
-                        traits={unit.traits}
+                        unitInfo={unit}
+                        appHandleDrop={props.appHandleDrop}
+                        appHandleDrag={props.appHandleDrag}
                     />
                 );
             })}

@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import genEmptyBoard from "../genEmptyBoard";
 import BoardHex from "./BoardHex";
 
-function Board() {
+function Board(props) {
 
     const [boardState, updateBoardState] = useState(genEmptyBoard());
 
@@ -38,19 +38,23 @@ function Board() {
         <div className="">
             <div className="main">
                 <div className="board-container">
-                {boardState.map(hex => {
+                {props.boardState.map(hex => { // trying to "move" boardState into App.jsx where overall state should be updated; props.units is appState.units
                     return (
                         <BoardHex 
                             key={hex.hexId}
-                            hexId={hex.hexId}
-                            hasUnit={hex.hasUnit}
-                            unitId={hex.unitId}
-                            unitName={hex.unitName}
-                            unitCost={hex.unitCost}
-                            unitIcon={hex.unitIcon}
-                            unitTraits={hex.unitTraits}
-                            unitItems={hex.unitItems}
+                            // hexId={hex.hexId}
+                            // hasUnit={hex.hasUnit}
+                            // unitId={hex.unitId}
+                            // unitName={hex.unitName}
+                            // unitCost={hex.unitCost}
+                            // unitIcon={hex.unitIcon}
+                            // unitTraits={hex.unitTraits}
+                            // unitItems={hex.unitItems}
                             handleBoardDrop={handleBoardDrop}
+                            appHandleDrop={props.appHandleDrop}
+                            placeGridUnit={props.placeGridUnit}
+                            appHandleDrag={props.appHandleDrag}
+                            hexState={hex}
                         />
                     );
                 })}

@@ -1,5 +1,11 @@
 body {
-    background-color: grey;
+    background-color: rgb(71, 71, 71);
+    --cost1: gray; /* 1-cost color for unit border and hex background */
+    --cost2: #11b288; /* 2-cost color for unit border and hex background */
+    --cost3: #207ac7; /* 3-cost color for unit border and hex background */
+    --cost4: #c440da; /* 4-cost color for unit border and hex background */
+    --cost5: #ffb93b; /* 5-cost color for unit border and hex background */
+    color: white;
 }
 
 /* Start Clippath hex styling method */
@@ -51,7 +57,7 @@ body {
     background-color: #000;
 }
 .hex-inner-empty {
-    background-color: darkgrey;
+    background-color: lightslategrey;
 }
 
 .hex-drag-over {
@@ -97,6 +103,43 @@ body {
     /* background-color: plum; */
 }
 
+.cost-1 img {
+    border-style: solid;
+    border-color: var(--cost1);
+    border-width: 0.25em;
+}
+
+.cost-2 img {
+    border-style: solid;
+    border-color: var(--cost2);
+    border-width: 0.25em;
+}
+
+.cost-3 img {
+    border-style: solid;
+    border-color: var(--cost3);
+    border-width: 0.25em;
+}
+
+.cost-4 img {
+    border-style: solid;
+    border-color: var(--cost4);
+    border-width: 0.25em;
+}
+
+.cost-5 img {
+    border-style: solid;
+    border-color: var(--cost5);
+    border-width: 0.25em;
+}
+
 .unit img {
     max-height: 4em;
+    width: 100%;;
+}
+
+.unit-name {
+    position: absolute;
+    font-size: small;
+    /* display: table; */
 }
