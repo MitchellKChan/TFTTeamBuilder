@@ -42,17 +42,8 @@ function Board(props) {
                     return (
                         <BoardHex 
                             key={hex.hexId}
-                            // hexId={hex.hexId}
-                            // hasUnit={hex.hasUnit}
-                            // unitId={hex.unitId}
-                            // unitName={hex.unitName}
-                            // unitCost={hex.unitCost}
-                            // unitIcon={hex.unitIcon}
-                            // unitTraits={hex.unitTraits}
-                            // unitItems={hex.unitItems}
                             handleBoardDrop={handleBoardDrop}
                             appHandleDrop={props.appHandleDrop}
-                            placeGridUnit={props.placeGridUnit}
                             appHandleDrag={props.appHandleDrag}
                             hexState={hex}
                         />

@@ -3,8 +3,8 @@ import React from "react";
 function Item(props) {
 
     function drag(event) { // TODO: implement to be able to equip items to hexes that have units
-        event.dataTransfer.setData("dragOrigin", "item pool");
-        props.appHandleDrag("item", props.itemInfo);
+        event.dataTransfer.setData("dragOrigin", "Item");
+        props.appHandleDrag("Item", props.itemInfo);
     }
     return (
         <div className="d-inline-block mr-md-1 mb-md-1">

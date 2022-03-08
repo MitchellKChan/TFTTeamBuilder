@@ -64,8 +64,24 @@ body {
     background-color: goldenrod;
 }
 
-.hex-occupied {
-    background-color: firebrick;
+.hex-cost-1 {
+    background-color: var(--cost1);
+}
+
+.hex-cost-2 {
+    background-color: var(--cost2);
+}
+
+.hex-cost-3 {
+    background-color: var(--cost3);
+}
+
+.hex-cost-4 {
+    background-color: var(--cost4);
+}
+
+.hex-cost-5 {
+    background-color: var(--cost5);
 }
 
 .hex-has-unit { /* TODO: VALIDATE IF THIS POSITION OR .hex-has-unit position NEEDS TO CHANGE TO KEEP HEX POSITIONS STATIC ON PAGE */
