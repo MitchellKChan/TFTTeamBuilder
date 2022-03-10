@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 
 function BoardHex(props) {
 
@@ -19,13 +19,13 @@ function BoardHex(props) {
         event.target.classList.remove("hex-drag-over");
     }
 
-    function handleDragEnter(event) { // TODO: should refactor "hex-drag-over" styling trigger
+    function handleDragEnter(event) { // TODO: may need to refactor "hex-drag-over" styling trigger
         event.preventDefault();
         if (!props.hexState.hasUnit) {
             event.target.classList.add("hex-drag-over");
         }
     }
-    function handleDragLeave(event) { // TODO: should refactor "hex-drag-over" styling removal trigger
+    function handleDragLeave(event) { // TODO: may need to refactor "hex-drag-over" styling removal trigger
         event.preventDefault();
         event.target.classList.remove("hex-drag-over");
     }
@@ -39,9 +39,7 @@ function BoardHex(props) {
     }
 
     return (
-        <div 
-            className={hexBorder}
-            >
+        <div className={hexBorder}>
             <div    
                 className="hex-inner hex-inner-empty"
                 onDrop={handleDrop} 

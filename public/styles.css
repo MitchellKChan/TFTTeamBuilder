@@ -17,13 +17,14 @@ body {
     --m: 4px;   /* margin */
     --f: calc(var(--s) * 1.732 + 4 * var(--m) - 1px); /* height of two hexagons (including their margins), minus twice the overlap */
     /* margin-bottom: 3%; */
-  }
+}
   
-  .board-container {
+.board-container {
     font-size: 0; /* disable white space between inline block element */
-  }
+}
+
   
-  .hex-border {
+.hex-border {
     width: var(--s);
     margin: var(--m);
     height: calc(var(--s) * 1.1547);
@@ -31,27 +32,26 @@ body {
     font-size: initial; /* we reset the font-size if we want to add some content */
     clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
     margin-bottom: calc(var(--m) - var(--s) * 0.2);
-  }
+}
 
-  .hex-inner { /* TODO: VALIDATE IF THIS POSITION OR .hex-has-unit position NEEDS TO CHANGE TO KEEP HEX POSITIONS STATIC ON PAGE */
-      position: relative; 
-      top: var(--m); /* equal to border thickness */
-      left: var(--m); /* equal to border thickness */
-      width: calc(var(--s) - (var(--m) * 2)); /* container height - (border thickness * 2) */
-      height: calc((var(--s) * 1.1547) - (var(--m) * 2)); /* container height - (border thickness * 2) */
-      clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
-  }
+.hex-inner { /* TODO: VALIDATE IF THIS POSITION OR .hex-has-unit position NEEDS TO CHANGE TO KEEP HEX POSITIONS STATIC ON PAGE */
+    position: relative; 
+    top: var(--m); /* equal to border thickness */
+    left: var(--m); /* equal to border thickness */
+    width: calc(var(--s) - (var(--m) * 2)); /* container height - (border thickness * 2) */
+    height: calc((var(--s) * 1.1547) - (var(--m) * 2)); /* container height - (border thickness * 2) */
+    clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
+}
 
-  .board-container::before {
+.board-container::before {
     content: "";
     width: calc(var(--s)/2 + var(--m));
     float: left;
     height: 120%;
     shape-outside: repeating-linear-gradient(#0000 0 calc(var(--f) - 3px), #000 0 var(--f));
-  }
+}
 
 /* End Clippath hex styling method */
-
 
 .hex-empty {
     background-color: #000;
@@ -115,8 +115,8 @@ body {
     /* background-color: darksalmon; */
 }
 
-.units {
-    /* background-color: plum; */
+.units-drag-over {
+    background-color: plum;
 }
 
 .cost-1 img {
