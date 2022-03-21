@@ -16,54 +16,51 @@ function App() {
     });
 
     function appHandleDrop(dragOrigin, targetHexId) {
+        let newAppState = appState;
+        let updatedHex = {};
         switch (dragOrigin) {
             case "Unit":
                 console.log(appState.heldObj.unitName + " dropped from Units component into hexId " + targetHexId);
                 console.log("targetHexId " + targetHexId + " had " + appState.boardState[targetHexId].unitName + " previously");
-                
-                updateAppState(prevAppState => {
-                    let updatedAppState = prevAppState;
 
-                    // updatedHex const created from updatedAppState.heldObj values since properties are named differently when dragging from Units component than from Board component
-                    const updatedHex = { 
-                        ...prevAppState.boardState[targetHexId],
-                        ["hasUnit"]: true,
-                        ["unitId"]: prevAppState.heldObj.unitId,
-                        ["unitName"]: prevAppState.heldObj.unitName,
-                        ["unitCost"]: prevAppState.heldObj.unitCost,
-                        ["unitIcon"]: prevAppState.heldObj.unitIcon,
-                        ["unitTraits"]: prevAppState.heldObj.unitTraits,
-                    };                    
+                // updatedHex reassigned to object created with appState.heldObj values
+                updatedHex = { 
+                    ...appState.boardState[targetHexId],
+                    ["hasUnit"]: true,
+                    ["unitId"]: appState.heldObj.unitId,
+                    ["unitName"]: appState.heldObj.unitName,
+                    ["unitCost"]: appState.heldObj.unitCost,
+                    ["unitIcon"]: appState.heldObj.unitIcon,
+                    ["unitTraits"]: appState.heldObj.unitTraits,
+                };                    
 
-                    // check if targetHexId had a unit prior to heldObj being dropped in it (replace / remove previous unit):
-                    //      - if so, call removeUnit on the BoardHex component in targetHexId
-                    if (prevAppState.boardState[targetHexId].hasUnit) {
-                        console.log(prevAppState.boardState[targetHexId].unitName + " in hexId " + targetHexId + " is being replaced / removed");
-                        updatedAppState = removeUnit(updatedAppState, prevAppState.boardState[targetHexId]);
-                    }
+                // check if targetHexId had a unit prior to heldObj being dropped in it (replace / remove previous unit):
+                //      - if so, call removeUnit on the BoardHex component in targetHexId
+                if (appState.boardState[targetHexId].hasUnit) {
+                    console.log(appState.boardState[targetHexId].unitName + " in hexId " + targetHexId + " is being replaced / removed");
+                    newAppState = removeUnit(newAppState, appState.boardState[targetHexId]);
+                }
 
-                    // check if unit of updatedHex is in appState.unitsOnBoard (prevent duplicate unit traits from counting):
-                    //      - if not, add its traits to updatedAppState.traits and add a key-value object to updatedAppState.unitsOnBoard
-                    if (!updatedAppState.unitsOnBoard[updatedHex.unitName]) {
-                        updatedAppState.traits = addTraits(prevAppState.traits, updatedHex);
-                        updatedAppState.unitsOnBoard = {
-                            ...updatedAppState.unitsOnBoard,
-                            [updatedHex.unitName]: 1
-                        };
-                    } else {
-                        updatedAppState.unitsOnBoard = {
-                            ...updatedAppState.unitsOnBoard,
-                            [updatedHex.unitName]: updatedAppState.unitsOnBoard[updatedHex.unitName] + 1
-                        };
-                    }
+                // check if unit of updatedHex is in appState.unitsOnBoard (prevent duplicate unit traits from counting):
+                //      - if not, add its traits to newAppState.traits and add a key-value object to newAppState.unitsOnBoard
+                //      - if so, reassign newAppState.unitsOnBoard with the spread operator to itself and increment the value (number of copies of unit on board)
+                if (!appState.unitsOnBoard[updatedHex.unitName]) {
+                    newAppState.traits = addTraits(appState.traits, updatedHex);
+                    newAppState.unitsOnBoard = {
+                        ...newAppState.unitsOnBoard,
+                        [updatedHex.unitName]: 1
+                    };
+                } else {
+                    newAppState.unitsOnBoard = {
+                        ...newAppState.unitsOnBoard,
+                        [updatedHex.unitName]: newAppState.unitsOnBoard[updatedHex.unitName] + 1
+                    };
+                }
 
-                    // "place" the heldObj (updatedHex) in the targetHexId index of updatedAppState.boardState;
-                    // this "removes" any unit that was previously in the targetHexId
-                    updatedAppState.boardState[targetHexId] = updatedHex;
-                    
-                    updatedAppState.heldObj = {};
-                    return updatedAppState;
-                });
+                // "place" the heldObj (updatedHex) in the targetHexId index of newAppState.boardState;
+                // this "removes" any unit that was previously in the targetHexId
+                newAppState.boardState[targetHexId] = updatedHex;
+    
                 break;
             case "Items":
                 console.log(appState.heldObj.name + " dropped from Items component into hexId " + targetHexId);
@@ -71,61 +68,53 @@ function App() {
             case "BoardHex":
                 if (targetHexId === -1) {
                     console.log(appState.heldObj.unitName + " is being dragged off Board and dropped into Units");
-                    updateAppState(prevAppState => {
-                        let updatedAppState = prevAppState;
     
-                        // updatedHex const created with prevAppState.heldObj.hexId to maintain hexId for BoardHex that is dragged off Board while resetting other properties
-                        const updatedHex = { 
-                            hexId: prevAppState.heldObj.hexId,
-                            hasUnit: false,
-                            unitId: null,
-                            unitName: null,
-                            unitCost: null,
-                            unitIcon: null,
-                            unitTraits: null,
-                            unitItems: null
-                        };                    
-    
-                        updatedAppState = removeUnit(updatedAppState, prevAppState.heldObj);
+                    // updatedHex reassigned to objecte created with appState.heldObj.hexId to maintain hexId for BoardHex that is dragged off Board while resetting other properties
+                    updatedHex = { 
+                        hexId: appState.heldObj.hexId,
+                        hasUnit: false,
+                        unitId: null,
+                        unitName: null,
+                        unitCost: null,
+                        unitIcon: null,
+                        unitTraits: null,
+                        unitItems: null
+                    };                    
 
-                        updatedAppState.boardState[updatedHex.hexId] = updatedHex;
+                    newAppState = removeUnit(newAppState, appState.heldObj);
 
-                        updatedAppState.heldObj = {};
-                        return updatedAppState;
-                    });
-                    break;
+                    newAppState.boardState[updatedHex.hexId] = updatedHex;
+
                 } else {
                     console.log(appState.heldObj.unitName + " dropped from BoardHex hexId " + appState.heldObj.hexId + " into hexId " + targetHexId);
                     console.log("targetHexId " + targetHexId + " had " + appState.boardState[targetHexId].unitName + " previously");
-                    updateAppState(prevAppState => {
-                        let updatedAppState = prevAppState;
     
-                        // updatedHex const created from updatedAppState.heldObj since property names match when dragging from Board component
-                        const updatedHex = {
-                            ...updatedAppState.heldObj,
-                            ["hexId"]: targetHexId // update value of "hexId" for updatedHex to targetHexId to maintain hexId of BoardHex state
-                        };
-    
-                        // swap hex info for targetHexId and prevAppState.heldObj.hexId: 
-                        //      - "place" prevAppState.boardState[targetHexId] (BoardHex state for targetHexId) into prevAppState.heldObj.hexId
-                        //      - update value of "hexId" for prevAppState.heldObj.hexId to prevAppState.heldObj.hexId to maintain hexId of BoardHex origin state
-                        updatedAppState.boardState[prevAppState.heldObj.hexId] = prevAppState.boardState[targetHexId];
-                        updatedAppState.boardState[prevAppState.heldObj.hexId].hexId = prevAppState.heldObj.hexId;
-    
-                        // "place" the heldObj (updatedHex) in the targetHexId index of updatedAppState.boardState;
-                        // this "removes" any unit that was previously in the targetHexId
-                        updatedAppState.boardState[targetHexId] = updatedHex;
+                    // updatedHex reassigned to object created from newAppState.heldObj since property names match when dragging from Board component
+                    updatedHex = {
+                        ...newAppState.heldObj,
+                        ["hexId"]: targetHexId // update value of "hexId" for updatedHex to targetHexId to maintain hexId of BoardHex state
+                    };
+
+                    // swap hex info for targetHexId and appState.heldObj.hexId: 
+                    //      - "place" appState.boardState[targetHexId] (BoardHex state for targetHexId) into appState.heldObj.hexId
+                    //      - update value of "hexId" for appState.heldObj.hexId to appState.heldObj.hexId to maintain hexId of BoardHex origin state
+                    newAppState.boardState[appState.heldObj.hexId] = appState.boardState[targetHexId];
+                    newAppState.boardState[appState.heldObj.hexId].hexId = appState.heldObj.hexId;
+
+                    // "place" the heldObj (updatedHex) in the targetHexId index of newAppState.boardState;
+                    // this "removes" any unit that was previously in the targetHexId
+                    newAppState.boardState[targetHexId] = updatedHex;
                         
-                        updatedAppState.heldObj = {};
-                        return updatedAppState;
-                    });
                 }
 
                 break;
             default:
                 console.log(appState.heldObj.unitName + " dropped from hex grid");
                 break;
+            
         }
+        newAppState.heldObj = {};
+        return updateAppState(newAppState);
     }
 
     function appHandleDrag(dragType, object) {
@@ -144,11 +133,11 @@ function App() {
                 break;
         }
         updateAppState(appState => {
-            const updatedAppState = {
+            const newAppState = {
                 ...appState,
                 ["heldObj"]: object
             };
-            return updatedAppState;
+            return newAppState;
         });
     }
 
@@ -236,7 +225,7 @@ function App() {
                         <div className="col-lg-9 board">
                             <div className="">
                                 <Board 
-                                    key={appState.heldObj}
+                                    key={appState}
                                     boardState={appState.boardState} 
                                     appHandleDrop={appHandleDrop} 
                                     appHandleDrag={appHandleDrag}
