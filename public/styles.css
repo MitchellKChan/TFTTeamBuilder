@@ -11,7 +11,7 @@ body {
 /* Start Clippath hex styling method */
 /* method tutorial: https://css-tricks.com/hexagons-and-beyond-flexible-responsive-grid-patterns-sans-media-queries/ */
 
-.main {
+.boardhex-main {
     display: flex; 
     --s: 80px;  /* size  */
     --m: 4px;   /* margin */
@@ -23,12 +23,19 @@ body {
     font-size: 0; /* disable white space between inline block element */
 }
 
-  
+.hex {
+    /* for displaying equipped items */
+    display: inline-block;
+    /* text-align: center; */
+    position: relative;
+    text-align: center;
+}
+
 .hex-border {
     width: var(--s);
     margin: var(--m);
     height: calc(var(--s) * 1.1547);
-    display: inline-block;
+    /* display: inline-block; */
     font-size: initial; /* we reset the font-size if we want to add some content */
     clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
     margin-bottom: calc(var(--m) - var(--s) * 0.2);
@@ -84,14 +91,18 @@ body {
     background-color: var(--cost5);
 }
 
-.hex-has-unit { /* TODO: VALIDATE IF THIS POSITION OR .hex-has-unit position NEEDS TO CHANGE TO KEEP HEX POSITIONS STATIC ON PAGE */
+.hex-display-position { /* TODO: VALIDATE IF THIS POSITION OR .hex-inner position NEEDS TO CHANGE TO KEEP HEX POSITIONS STATIC ON PAGE */
     position: absolute; /* dropped images are centered properly when position is not defined BUT hex moves slighty when dropping unit without it being absolute */
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
-.hex-has-unit img { /* looks okay when height and width are 120%-125% when .hex-has-unit position is absolute*/
+.hex-info {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    /* align-items: center; */
+}
+
+.hex-info img { /* looks okay when height and width are 120%-125% when .hex-has-unit position is absolute*/
     height: 120%;
     width: 120%;
     /* max-height: calc(var(--s) * 1.1547); */
@@ -99,20 +110,26 @@ body {
     margin: auto;
 }
 
-.equipped-items {
-    /* background-color: cornflowerblue; */
+.hex-unit-name {
+    position: absolute;
+    font-size: 0.7em;
+    bottom: 2em;
+    text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
 }
 
-.items {
-    /* background-color: cadetblue; */
+.hex-items {
+    position: absolute;
+    width: 100%;
+    top: 4.5rem
+}
+
+.hex-items img {
+    width: 1.3rem;
+
 }
 
 .item img {
-    max-width: 2rem;
-}
-
-.traits {
-    /* background-color: darksalmon; */
+    max-width: 2em;
 }
 
 .units-drag-over {
@@ -120,42 +137,41 @@ body {
 }
 
 .cost-1 img {
-    border-style: solid;
     border-color: var(--cost1);
-    border-width: 0.25em;
 }
 
 .cost-2 img {
-    border-style: solid;
     border-color: var(--cost2);
-    border-width: 0.25em;
 }
 
 .cost-3 img {
-    border-style: solid;
     border-color: var(--cost3);
-    border-width: 0.25em;
 }
 
 .cost-4 img {
-    border-style: solid;
     border-color: var(--cost4);
-    border-width: 0.25em;
 }
 
 .cost-5 img {
-    border-style: solid;
     border-color: var(--cost5);
-    border-width: 0.25em;
+}
+
+.unit {
+    position: relative;
+    text-align: center;
 }
 
 .unit img {
-    max-height: 4em;
-    width: 100%;;
+    max-height: 5em;
+    width: 100%;
+    border-style: solid;
+    border-width: 0.25em;
 }
 
 .unit-name {
     position: absolute;
-    font-size: small;
-    /* display: table; */
+    font-size: 0.7em;
+    bottom: 0.4em;
+    width: 100%;
+    text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
 }

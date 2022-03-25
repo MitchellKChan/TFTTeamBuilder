@@ -2,11 +2,8 @@ import React from "react";
 import BoardHex from "./BoardHex";
 
 function Board(props) {
-
-    console.log(props.boardState);
-
     return (
-        <div className="main">
+        <div className="boardhex-main">
             <div className="board-container">
             {props.boardState.map(hex => {
                 return (

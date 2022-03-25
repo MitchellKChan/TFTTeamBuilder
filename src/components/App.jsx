@@ -62,8 +62,29 @@ function App() {
                 newAppState.boardState[targetHexId] = updatedHex;
     
                 break;
-            case "Items":
-                console.log(appState.heldObj.name + " dropped from Items component into hexId " + targetHexId);
+            case "Item":
+                // console.log(appState.boardState[targetHexId].hasUnit ? appState.heldObj.name + " dropped from Items component into hexId " + targetHexId : "cannot drop " + appState.heldObj.name + " into empty hex");
+                
+                // check if targetHexId.hasUnit is false
+                //      - if so, update error message that item cannot be placed in hexes that do not have units
+                //      - if not, check whether the unit can be equipped with the heldObj item; ****TODO: BREAK OUT THIS ITEM EQUIPPING VALIDATION INTO OTHER FUNCTIONS*****
+                if (!appState.boardState[targetHexId].hasUnit) {
+                    console.log("ERROR: cannot drop " + appState.heldObj.name + " item into empty hex");
+                } else {
+                    if (Object.keys(appState.boardState[targetHexId].unitItems).length < 3) {
+                        newAppState.boardState[targetHexId] = {
+                            ...appState.boardState[targetHexId],
+                            ["unitItems"]: {
+                                ...appState.boardState[targetHexId].unitItems,
+                                [appState.heldObj.id]: appState.heldObj // TODO: refactor key to allow multiple non-unique items to be equipped properly
+                            }
+                        };
+                    } else {
+                        console.log("ERROR: cannot drop " + appState.heldObj.name + " item into hex with 3 items already equipped");
+                        console.log(appState.boardState[targetHexId].unitItems);
+                    }
+                }
+
                 break;
             case "BoardHex":
                 if (targetHexId === -1) {
@@ -78,7 +99,9 @@ function App() {
                         unitCost: null,
                         unitIcon: null,
                         unitTraits: null,
-                        unitItems: null
+                        unitItems: {
+                            itemCount: 0
+                        }
                     };                    
 
                     newAppState = removeUnit(newAppState, appState.heldObj);
@@ -113,11 +136,17 @@ function App() {
                 break;
             
         }
-        newAppState.heldObj = {};
-        return updateAppState(newAppState);
+        updateAppState(() => {
+            const AppState = {
+                ...newAppState,
+                ["heldObj"]: {}
+            };
+            return AppState;
+        });
     }
 
     function appHandleDrag(dragType, object) {
+        // switch statement to validate what object type is being dragged (debugging purposes only)
         switch (dragType) {
             case "Unit":
                 console.log(object.unitName + " being dragged from Units component");
@@ -209,8 +238,6 @@ function App() {
 
         return appState;
     }
-
-    // console.log(appState.traits);
 
     return (
         <div className="container">

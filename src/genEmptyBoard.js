@@ -12,7 +12,7 @@ function genEmptyBoard() {
             unitCost: null,
             unitIcon: null,
             unitTraits: null,
-            unitItems: null
+            unitItems: {}
         });
     }
     return initialBoard;

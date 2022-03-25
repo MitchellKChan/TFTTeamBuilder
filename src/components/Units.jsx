@@ -9,6 +9,11 @@ function Units(props) {
     // iconMapper function call to save object of unit icon path mappings to unitIcons
     const unitIcons = iconPath("unit");
 
+    // create new array excluding Target Dummy unit (championId "TFT_TrainingDummy")
+    const championUnits = units.filter((unit) => {
+        return unit.championId !== "TFT_TrainingDummy";
+    });
+
     function handleDragOver(event) {
         event.preventDefault();
         event.stopPropagation();
@@ -38,14 +43,13 @@ function Units(props) {
 
     return (
         <div 
-            className=""
             onDrop={handleDrop}
             onDragOver={handleDragOver} 
             onDragEnter={handleDragEnter} 
             onDragLeave={handleDragLeave}
         >
             <div>
-                {units.map(unit => {
+                {championUnits.map(unit => {
                     return (
                         <Unit 
                             key={unit.championId}

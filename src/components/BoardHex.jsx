@@ -39,24 +39,35 @@ function BoardHex(props) {
     }
 
     return (
-        <div className={hexBorder}>
-            <div    
-                className="hex-inner hex-inner-empty"
-                onDrop={handleDrop} 
-                onDragOver={handleDragOver} 
-                onDragEnter={handleDragEnter} 
-                onDragLeave={handleDragLeave}
-            >
-                <div className="hex-has-unit" 
-                draggable={props.hexState.hasUnit} 
-                onDragStart={dragfromBoardHex}
+        <div className="hex">
+            <div className={hexBorder}>
+                <div    
+                    className="hex-inner hex-inner-empty"
+                    onDrop={handleDrop} 
+                    onDragOver={handleDragOver} 
+                    onDragEnter={handleDragEnter} 
+                    onDragLeave={handleDragLeave}
                 >
-                    <img src={props.hexState.hasUnit ? props.hexState.unitIcon : null} 
-                    alt={props.hexState.hasUnit ? props.hexState.unitName : null}>
-                    </img>
+                    <div className="hex-display-position" 
+                    draggable={props.hexState.hasUnit} 
+                    onDragStart={dragfromBoardHex}
+                    >
+                        <div className="hex-info">
+                            <img src={props.hexState.hasUnit ? props.hexState.unitIcon : null} 
+                            alt={props.hexState.hasUnit ? props.hexState.unitName : null}>
+                            </img>
+                            <div className="hex-unit-name">{props.hexState.hasUnit ? props.hexState.unitName : null}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
+            <div className="hex-items">
+                {Object.entries(props.hexState.unitItems).map(([itemId, item]) => {
+                    return (
+                        <img key={itemId} src={item.itemIcon} alt={item.name}></img>
+                    );
+                })}
+            </div>
         </div>
     );
 }
