@@ -99,9 +99,7 @@ function App() {
                         unitCost: null,
                         unitIcon: null,
                         unitTraits: null,
-                        unitItems: {
-                            itemCount: 0
-                        }
+                        unitItems: {}
                     };                    
 
                     newAppState = removeUnit(newAppState, appState.heldObj);
