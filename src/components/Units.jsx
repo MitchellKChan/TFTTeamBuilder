@@ -28,14 +28,14 @@ function Units(props) {
         event.target.classList.remove("units-drag-over");
     }
 
-    function handleDragEnter(event) { // TODO: may need to refactor "hex-drag-over" styling trigger
+    function handleDragEnter(event) { // TODO: need to refactor "hex-drag-over" styling to trigger only when props.heldObj is a BoardHex Component
         event.preventDefault();
         event.stopPropagation();
         if (props.heldObj.hasUnit) {
             event.target.classList.add("units-drag-over");
         }
     }
-    function handleDragLeave(event) { // TODO: may need to refactor "hex-drag-over" styling removal trigger
+    function handleDragLeave(event) { // TODO: need to refactor "hex-drag-over" styling removal to trigger only when props.heldObj is a BoardHex Component
         event.preventDefault();
         event.stopPropagation();
         event.target.classList.remove("units-drag-over");
@@ -48,20 +48,17 @@ function Units(props) {
             onDragEnter={handleDragEnter} 
             onDragLeave={handleDragLeave}
         >
-            <div>
-                {championUnits.map(unit => {
-                    return (
-                        <Unit 
-                            key={unit.championId}
-                            iconPath={unitIcons[unit.championId]}
-                            unitInfo={unit}
-                            appHandleDrop={props.appHandleDrop}
-                            appHandleDrag={props.appHandleDrag}
-                        />
-                    );
-                })}
-            </div>
-
+            {championUnits.map(unit => {
+                return (
+                    <Unit 
+                        key={unit.championId}
+                        iconPath={unitIcons[unit.championId]}
+                        unitInfo={unit}
+                        appHandleDrop={props.appHandleDrop}
+                        appHandleDrag={props.appHandleDrag}
+                    />
+                );
+            })}
         </div>
     );
 }

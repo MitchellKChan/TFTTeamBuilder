@@ -62,28 +62,41 @@ function App() {
                 newAppState.boardState[targetHexId] = updatedHex;
     
                 break;
-            case "Item":
-                // console.log(appState.boardState[targetHexId].hasUnit ? appState.heldObj.name + " dropped from Items component into hexId " + targetHexId : "cannot drop " + appState.heldObj.name + " into empty hex");
-                
-                // check if targetHexId.hasUnit is false
-                //      - if so, update error message that item cannot be placed in hexes that do not have units
-                //      - if not, check whether the unit can be equipped with the heldObj item; ****TODO: BREAK OUT THIS ITEM EQUIPPING VALIDATION INTO OTHER FUNCTIONS*****
-                if (!appState.boardState[targetHexId].hasUnit) {
-                    console.log("ERROR: cannot drop " + appState.heldObj.name + " item into empty hex");
+            case "Item":    
+            
+                // check if targetHexId is -1 (item is being dragged from BoardHex Component to Items Component)
+                //      - if so, call removeItem and assign it to newAppState
+                if (targetHexId === -1) {
+                    newAppState = removeItem(newAppState, appState.heldObj);
                 } else {
-                    if (Object.keys(appState.boardState[targetHexId].unitItems).length < 3) {
-                        newAppState.boardState[targetHexId] = {
-                            ...appState.boardState[targetHexId],
-                            ["unitItems"]: {
-                                ...appState.boardState[targetHexId].unitItems,
-                                [appState.heldObj.id]: appState.heldObj // TODO: refactor key to allow multiple non-unique items to be equipped properly
-                            }
-                        };
+                //      - if not, check if appState.boardState[targetHexId].hasUnit is false
+                //          -- if so, update error message that item cannot be placed in hexes that do not have units
+                //          -- if not, check whether the unit can be equipped with the heldObj item; ****TODO: BREAK OUT THIS ITEM EQUIPPING VALIDATION INTO OTHER FUNCTIONS*****
+                    if (!appState.boardState[targetHexId].hasUnit) {
+                        console.log("ERROR: cannot drop " + appState.heldObj.name + " item into empty hex");
                     } else {
-                        console.log("ERROR: cannot drop " + appState.heldObj.name + " item into hex with 3 items already equipped");
-                        console.log(appState.boardState[targetHexId].unitItems);
+                        // check if targetHexId has space to receive another item; appState.boardState[targetHexId].unitItems cannot have more than 3 objects
+                        if (Object.keys(appState.boardState[targetHexId].unitItems).length < 3) {
+                            newAppState.boardState[targetHexId] = {
+                                ...appState.boardState[targetHexId],
+                                ["unitItems"]: {
+                                    ...appState.boardState[targetHexId].unitItems,
+                                    [appState.heldObj.id]: appState.heldObj // TODO: refactor key to allow multiple non-unique items to be equipped properly
+                                }
+                            };
+                        } else {
+                            console.log("ERROR: cannot drop " + appState.heldObj.name + " item into hex with 3 items already equipped");
+                            console.log(appState.boardState[targetHexId].unitItems);
+                        }
+
+                        // check if the heldObj item was being dragged from a BoardHex Component
+                        //      - if so, remove it from the unitItems object of the heldObj.prevHexId BoardHex Component 
+                        if (appState.heldObj.prevHexId) {
+                            newAppState = removeItem(newAppState, appState.heldObj);
+                        }
                     }
                 }
+
 
                 break;
             case "BoardHex":
@@ -237,6 +250,16 @@ function App() {
         return appState;
     }
 
+    // removeItem is called when appHandleDrop is passed "Item" as its dragOrigin parameter in one of the following situations:
+    //      - dragging an Item Component from one BoardHex Component to a different one (reequip item)
+    //      - dragging an Item Component from a BoardHex Component to the Items Component (remove item)
+    // removeItem deletes the heldItem from the unitItems object of the heldItem.prevHexId BoardHex Component 
+    function removeItem(appState, heldItem) {
+        delete appState.boardState[heldItem.prevHexId].unitItems[heldItem.id];
+
+        return appState;
+    }
+
     return (
         <div className="container">
             <div className="row">
@@ -276,6 +299,7 @@ function App() {
                             <div>Items</div>
                             <div className="">
                                 <Items 
+                                    heldObj={appState.heldObj}
                                     appHandleDrop={appHandleDrop} 
                                     appHandleDrag={appHandleDrag}
                                 />

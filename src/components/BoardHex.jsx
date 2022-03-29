@@ -1,4 +1,5 @@
 import React from "react";
+import Item from "./Item";
 
 function BoardHex(props) {
 
@@ -64,7 +65,15 @@ function BoardHex(props) {
             <div className="hex-items">
                 {Object.entries(props.hexState.unitItems).map(([itemId, item]) => {
                     return (
-                        <img key={itemId} src={item.itemIcon} alt={item.name}></img>
+                        <Item 
+                        key={itemId}
+                        iconPath={item.itemIcon}
+                        itemInfo={item}
+                        displayClasses={"hex-items-item"}
+                        equippedHexId={props.hexState.hexId}
+                        appHandleDrop={props.appHandleDrop}
+                        appHandleDrag={props.appHandleDrag}
+                        />
                     );
                 })}
             </div>

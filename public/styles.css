@@ -123,13 +123,20 @@ body {
     top: 4.5rem
 }
 
-.hex-items img {
-    width: 1.3rem;
-
+.hex-items-item {
+    display: inline;
 }
 
-.item img {
-    max-width: 2em;
+.hex-items-item img {
+    width: 1.3rem;
+}
+
+.items-item img {
+    width: 2em;
+}
+
+.items-drag-over {
+    background-color: palegreen;
 }
 
 .units-drag-over {
