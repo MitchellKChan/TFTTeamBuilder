@@ -1,5 +1,5 @@
 body {
-    background-color: rgb(71, 71, 71);
+    background-color: #373737;
     --cost1: gray; /* 1-cost color for unit border and hex background */
     --cost2: #11b288; /* 2-cost color for unit border and hex background */
     --cost3: #207ac7; /* 3-cost color for unit border and hex background */
@@ -61,14 +61,14 @@ body {
 /* End Clippath hex styling method */
 
 .hex-empty {
-    background-color: #000;
+    background-color: #000000;
 }
 .hex-inner-empty {
-    background-color: lightslategrey;
+    background-color: #373737;
 }
 
 .hex-drag-over {
-    background-color: goldenrod;
+    background-color: #daa520;
 }
 
 .hex-cost-1 {
@@ -114,7 +114,7 @@ body {
     position: absolute;
     font-size: 0.7em;
     bottom: 2em;
-    text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+    text-shadow: 1px 0 0 #000000, 0 -1px 0 #000000, 0 1px 0 #000000, -1px 0 0 #000000;
 }
 
 .hex-items {
@@ -125,6 +125,7 @@ body {
 
 .hex-items-item {
     display: inline;
+    margin: 0 0.05rem;
 }
 
 .hex-items-item img {
@@ -136,11 +137,11 @@ body {
 }
 
 .items-drag-over {
-    background-color: palegreen;
+    background-color: #98fb98;
 }
 
 .units-drag-over {
-    background-color: plum;
+    background-color: #dda0dd;
 }
 
 .cost-1 img {
@@ -172,7 +173,8 @@ body {
     max-height: 5em;
     width: 100%;
     border-style: solid;
-    border-width: 0.25em;
+    border-width: 0.2em;
+    border-radius: 0.5em;
 }
 
 .unit-name {
@@ -180,5 +182,19 @@ body {
     font-size: 0.7em;
     bottom: 0.4em;
     width: 100%;
-    text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+    text-shadow: 1px 0 0 #000000, 0 -1px 0 #000000, 0 1px 0 #000000, -1px 0 0 #000000;
+}
+
+.trait {
+    background-color: #4b4b4b;
+    font-size: 0.8em;
+    align-items: center;
+    border-style: solid;
+    border-width: 0.2em;
+    border-radius: 1em;
+    border-color: #000000;
+}
+
+.trait img {
+    max-height: 3em;
 }
