@@ -5,8 +5,7 @@ import iconPath from "../iconPaths";
 
 function Items(props) {
 
-    // require.context call to generate a context module of item icon paths;
-    // iconMapper function call to save object of item icon path mappings to itemIcons
+    // iconPath call with parameter "item" to save the object of Item icon paths to itemIcons
     const itemIcons = iconPath("item");
 
     // create new array excluding component items (ids 1-9)

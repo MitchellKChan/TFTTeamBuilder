@@ -1,11 +1,32 @@
 body {
     background-color: #373737;
-    --cost1: gray; /* 1-cost color for unit border and hex background */
+    color: #ffffff;
+    --cost1: #808080; /* 1-cost color for unit border and hex background */
     --cost2: #11b288; /* 2-cost color for unit border and hex background */
     --cost3: #207ac7; /* 3-cost color for unit border and hex background */
     --cost4: #c440da; /* 4-cost color for unit border and hex background */
     --cost5: #ffb93b; /* 5-cost color for unit border and hex background */
-    color: white;
+}
+
+.app-title {
+    text-align: center;
+    font-size: 3em;
+}
+
+.error-message {
+    text-align: center;
+    background-color: #ff7e7e;
+    color: #8b0000;
+    border-radius: 0.3em;
+    font-size: 0.9em;
+}
+
+.error-message::after {
+    content: "\200b";
+}
+
+.hidden {
+    display: none;
 }
 
 /* Start Clippath hex styling method */
@@ -16,7 +37,6 @@ body {
     --s: 80px;  /* size  */
     --m: 4px;   /* margin */
     --f: calc(var(--s) * 1.732 + 4 * var(--m) - 1px); /* height of two hexagons (including their margins), minus twice the overlap */
-    /* margin-bottom: 3%; */
 }
   
 .board-container {
@@ -26,7 +46,6 @@ body {
 .hex {
     /* for displaying equipped items */
     display: inline-block;
-    /* text-align: center; */
     position: relative;
     text-align: center;
 }
@@ -35,10 +54,10 @@ body {
     width: var(--s);
     margin: var(--m);
     height: calc(var(--s) * 1.1547);
-    /* display: inline-block; */
     font-size: initial; /* we reset the font-size if we want to add some content */
     clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
     margin-bottom: calc(var(--m) - var(--s) * 0.2);
+    background-color: #000000;
 }
 
 .hex-inner { /* TODO: VALIDATE IF THIS POSITION OR .hex-has-unit position NEEDS TO CHANGE TO KEEP HEX POSITIONS STATIC ON PAGE */
@@ -60,15 +79,12 @@ body {
 
 /* End Clippath hex styling method */
 
-.hex-empty {
-    background-color: #000000;
-}
 .hex-inner-empty {
     background-color: #373737;
 }
 
 .hex-drag-over {
-    background-color: #daa520;
+    background-color: #586a9b;
 }
 
 .hex-cost-1 {
@@ -134,14 +150,15 @@ body {
 
 .items-item img {
     width: 2em;
+    border-radius: 0.2em;
 }
 
 .items-drag-over {
-    background-color: #98fb98;
+    background-color: #258349;
 }
 
 .units-drag-over {
-    background-color: #dda0dd;
+    background-color: #2ea1b1;
 }
 
 .cost-1 img {
@@ -174,7 +191,7 @@ body {
     width: 100%;
     border-style: solid;
     border-width: 0.2em;
-    border-radius: 0.5em;
+    border-radius: 0.4em;
 }
 
 .unit-name {

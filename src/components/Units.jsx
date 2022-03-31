@@ -5,8 +5,7 @@ import iconPath from "../iconPaths";
 
 function Units(props) {
 
-    // require.context call to generate a context module of unit icon paths;
-    // iconMapper function call to save object of unit icon path mappings to unitIcons
+    // iconPath call with parameter "unit" to save the object of Unit icon paths to unitIcons
     const unitIcons = iconPath("unit");
 
     // create new array excluding Target Dummy unit (championId "TFT_TrainingDummy")

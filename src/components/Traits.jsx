@@ -5,8 +5,7 @@ import iconPath from "../iconPaths";
 
 function Traits(props) {
 
-    // require.context call to generate a context module of trait icon paths;
-    // iconMapper function call to save object of trait icon path mappings to traitIcons
+    // iconPath call with parameter "trait" to save the object of Trait icon paths to traitIcons
     const traitIcons = iconPath("trait");
 
     return (Object.keys(props.activeTraits).length === 0 ? <div>Please add units to the board to view active traits</div> : 

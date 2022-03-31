@@ -4,7 +4,7 @@ import Item from "./Item";
 function BoardHex(props) {
 
     // costBorder is the className string that updates the border of the BoardHex based on the cost of the unit currently in it
-    const hexBorder = props.hexState.hasUnit ? "hex-border hex-cost-" + props.hexState.unitCost.toString() : "hex-border hex-empty"
+    const hexBorder = props.hexState.hasUnit ? "hex-cost-" + props.hexState.unitCost.toString() : "hex-empty";
 
     function handleDragOver(event) {
         event.preventDefault();
@@ -41,7 +41,7 @@ function BoardHex(props) {
 
     return (
         <div className="hex">
-            <div className={hexBorder}>
+            <div className={"hex-border "+ hexBorder}>
                 <div    
                     className="hex-inner hex-inner-empty"
                     onDrop={handleDrop} 

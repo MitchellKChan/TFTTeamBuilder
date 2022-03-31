@@ -12,16 +12,18 @@ function App() {
         boardState: genEmptyBoard(), // array of BoardHex state objects
         unitsOnBoard: {}, // object of how many of each unit are in a BoardHex state in boardState
         traits: {}, // object of active traits of units that are in a BoardHex state in boardState
-        heldObj: {} // state object for whatever is currently being dragged; the state can updated from a Unit, BoardHex, or Item component
+        heldObj: {}, // state object for whatever is currently being dragged; the state can updated from a Unit, BoardHex, or Item component
+        errorMessage: "" // string explaining what error occurred on the page; is overwritten after the next valid action is processed
     });
+
+    let errorMessageClasses = appState.errorMessage === "" ? "invisible" : "visible";
 
     function appHandleDrop(dragOrigin, targetHexId) {
         let newAppState = appState;
         let updatedHex = {};
+        let newErrorMessage = "";
         switch (dragOrigin) {
             case "Unit":
-                console.log(appState.heldObj.unitName + " dropped from Units component into hexId " + targetHexId);
-                console.log("targetHexId " + targetHexId + " had " + appState.boardState[targetHexId].unitName + " previously");
 
                 // updatedHex reassigned to object created with appState.heldObj values
                 updatedHex = { 
@@ -37,7 +39,6 @@ function App() {
                 // check if targetHexId had a unit prior to heldObj being dropped in it (replace / remove previous unit):
                 //      - if so, call removeUnit on the BoardHex component in targetHexId
                 if (appState.boardState[targetHexId].hasUnit) {
-                    console.log(appState.boardState[targetHexId].unitName + " in hexId " + targetHexId + " is being replaced / removed");
                     newAppState = removeUnit(newAppState, appState.boardState[targetHexId]);
                 }
 
@@ -72,8 +73,8 @@ function App() {
                 //      - if not, check if appState.boardState[targetHexId].hasUnit is false
                 //          -- if so, update error message that item cannot be placed in hexes that do not have units
                 //          -- if not, check whether the unit can be equipped with the heldObj item; ****TODO: BREAK OUT THIS ITEM EQUIPPING VALIDATION INTO OTHER FUNCTIONS*****
-                    if (!appState.boardState[targetHexId].hasUnit) {
-                        console.log("ERROR: cannot drop " + appState.heldObj.name + " item into empty hex");
+                    if (!appState.boardState[targetHexId].hasUnit) { 
+                        newErrorMessage = appState.heldObj.name + " should be equipped after placing a unit on a hex.";
                     } else {
                         // check if targetHexId has space to receive another item; appState.boardState[targetHexId].unitItems cannot have more than 3 objects
                         if (Object.keys(appState.boardState[targetHexId].unitItems).length < 3) {
@@ -85,8 +86,7 @@ function App() {
                                 }
                             };
                         } else {
-                            console.log("ERROR: cannot drop " + appState.heldObj.name + " item into hex with 3 items already equipped");
-                            console.log(appState.boardState[targetHexId].unitItems);
+                            newErrorMessage = "A unit cannot be equipped with more than 3 items.";
                         }
 
                         // check if the heldObj item was being dragged from a BoardHex Component
@@ -150,7 +150,8 @@ function App() {
         updateAppState(() => {
             const AppState = {
                 ...newAppState,
-                ["heldObj"]: {}
+                errorMessage: newErrorMessage,
+                heldObj: {}
             };
             return AppState;
         });
@@ -175,7 +176,7 @@ function App() {
         updateAppState(appState => {
             const newAppState = {
                 ...appState,
-                ["heldObj"]: object
+                heldObj: object
             };
             return newAppState;
         });
@@ -261,17 +262,20 @@ function App() {
     }
 
     return (
-        <div className="container">
-            <div className="row">
-                <div className="col-xl-2 traits">
-                    <div className="">
-                        <Traits activeTraits={appState.traits}/>
+        <div>
+            <div className="app-title">
+                TFT Team Builder - Set 5.5
+            </div>
+            <div className="container">
+                <div className="row">
+                    <div className="col-xl-2 traits">
+                        <div className="">
+                            <Traits activeTraits={appState.traits}/>
+                        </div>
                     </div>
-                </div>
-                <div className="col-xl-10">
-                    <div className="row pb-4">
-                        <div className="col-lg-9 board">
-                            <div className="">
+                    <div className="col-xl-10">
+                        <div className="row pb-3">
+                            <div className="col-lg-9 board">
                                 <Board 
                                     key={appState}
                                     boardState={appState.boardState} 
@@ -279,36 +283,42 @@ function App() {
                                     appHandleDrag={appHandleDrag}
                                 />
                             </div>
-                        </div>
-                        <div className="col-lg-3 equipped-items">
-                            {/* <div className="">Equipped Items</div> */}
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-xl-9 units">
-                            <div>Units</div>
-                            <div className="">
-                                <Units 
-                                    heldObj={appState.heldObj}
-                                    appHandleDrop={appHandleDrop} 
-                                    appHandleDrag={appHandleDrag} 
-                                />
+                            <div className="col-lg-3 equipped-items">
+                                {/* <div className="">Equipped Items</div> */}
                             </div>
                         </div>
-                        <div className="col-xl-3 items">
-                            <div>Items</div>
-                            <div className="">
-                                <Items 
-                                    heldObj={appState.heldObj}
-                                    appHandleDrop={appHandleDrop} 
-                                    appHandleDrag={appHandleDrag}
-                                />
+                        <div className="py-3">
+                            <div className={"error-message p-1 " + errorMessageClasses}>
+                                {appState.errorMessage}
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-xl-9 units">
+                                <div>Units</div>
+                                <div className="">
+                                    <Units 
+                                        heldObj={appState.heldObj}
+                                        appHandleDrop={appHandleDrop} 
+                                        appHandleDrag={appHandleDrag} 
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-xl-3 items">
+                                <div>Items</div>
+                                <div className="">
+                                    <Items 
+                                        heldObj={appState.heldObj}
+                                        appHandleDrop={appHandleDrop} 
+                                        appHandleDrag={appHandleDrag}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
     );
 }
 
