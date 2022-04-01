@@ -7,10 +7,15 @@ function Traits(props) {
 
     // iconPath call with parameter "trait" to save the object of Trait icon paths to traitIcons
     const traitIcons = iconPath("trait");
+    
+    // orderedTraits is an array of active traits ordered from highest active level to lowest
+    const orderedTraits = Object.entries(props.activeTraits).sort((trait1, trait2) => {
+        return trait1[0].localeCompare(trait2[0]);
+    });
 
     return (Object.keys(props.activeTraits).length === 0 ? <div>Please add units to the board to view active traits</div> : 
         <div className="">
-            {Object.entries(props.activeTraits).map(([trait, count]) => {
+            {orderedTraits.map(([trait, count]) => {
                 const activeTrait = traits.find(traitInfo => traitInfo.key === trait);
                 return (
                     <Trait 
