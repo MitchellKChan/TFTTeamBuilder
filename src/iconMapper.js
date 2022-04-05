@@ -5,7 +5,7 @@
 //      - "./set5patch1115/traits"
 // The returned icon path objects are saved to constants in iconPaths.js that components use for displaying icons
 
-function iconMapper(contMod) {
+function iconMapper(contMod, suffix) {
     // Parameter:
     //      - "contMod": the context module passed in from iconPaths.js
     // Return value "icons" is an object of key-value object pairs as described:
@@ -15,9 +15,9 @@ function iconMapper(contMod) {
     let icons = {};
 
     contMod.keys().forEach((obj) => {
-        // remove "./" prefix and ".png" suffix from item so that typeId string only contains 
+        // remove "./" prefix and suffix from item so that typeId string only contains 
         // the specific object id value
-        const typeId = obj.replace("./", "").replace(".png", "");
+        const typeId = obj.replace("./", "").replace(suffix, "");
         // object id value typeId key is mapped to its respective icon path from contMod
         icons[typeId] = contMod(obj);
     });

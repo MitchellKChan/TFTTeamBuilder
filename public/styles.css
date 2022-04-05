@@ -212,6 +212,18 @@ body {
     border-color: #000000;
 }
 
+.bronze {
+    border-color: #cd8032;
+}
+
+.silver {
+    border-color: #c0c0c0;
+}
+
+.gold {
+    border-color: #daa520;
+}
+
 .trait img {
-    max-height: 3em;
+    max-width: 3em;
 }
