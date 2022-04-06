@@ -211,19 +211,17 @@ body {
     border-radius: 1em;
     border-color: #000000;
 }
-
-.bronze {
-    border-color: #cd8032;
+.trait-level {
+    height: 3.5em;
+    width: 3.5em;
+    background-repeat: no-repeat;
+    background-size: contain;
+    justify-content: center;
+    display: flex;
+    align-items: center;
 }
 
-.silver {
-    border-color: #c0c0c0;
-}
-
-.gold {
-    border-color: #daa520;
-}
-
-.trait img {
-    max-width: 3em;
+.trait-level img {
+    max-height: 2em;
+    max-width: 2em;
 }

@@ -7,7 +7,7 @@ function Traits(props) {
 
     // iconPath call with parameter "trait" to save the object of Trait icon paths to traitIcons
     const traitIcons = iconPath("trait");
-    // const traitIconsSvg = iconPath("trait_svg"); // TODO: figure out how to use "bg.png" as a background for trait svg symbols
+    const traitIconsSvg = iconPath("trait_svg"); // TODO: figure out how to use "bg.png" as a background for trait svg symbols
 
     // levelHierarchy contains the possible active trait level values in ascending order from lowest to highest level
     // levelHierarchy is used by compareTraitLevels to determine which level an active trait has
@@ -108,7 +108,8 @@ function Traits(props) {
                         traitInfo={activeTrait}
                         count={count}
                         traitStyle={getTraitLevel(trait, count)} // temporary styling while figuring out .svg symbol with bg.png backgrounds
-                        iconPath={traitIcons[activeTrait.name.toLowerCase()]}
+                        iconPath={traitIconsSvg[activeTrait.name.toLowerCase()]}
+                        traitLevel={traitIconsSvg[getTraitLevel(trait, count)]}
                     />
                 );
             })}
