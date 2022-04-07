@@ -8,16 +8,28 @@ import Units from "./Units";
 
 function App() {
 
+    // useState object to manage overall state of the application
     const [appState, updateAppState] = useState({
         boardState: genEmptyBoard(), // array of BoardHex state objects
         unitsOnBoard: {}, // object of how many of each unit are in a BoardHex state in boardState
         traits: {}, // object of active traits of units that are in a BoardHex state in boardState
         heldObj: {}, // state object for whatever is currently being dragged; the state can updated from a Unit, BoardHex, or Item component
+        showUnitsBy: "Name", // string that notes how Unit Components are displayed in the Units Component; default is alphabetically by name
+        showItemsBy: "Craftable", // string that notes how Items Components are displayed in the Item Component; default is craftable items
         errorMessage: "" // string explaining what error occurred on the page; is overwritten after the next valid action is processed
     });
 
+    // trigger diplaying an error message when an erroneous action has occurred
     let errorMessageClasses = appState.errorMessage === "" ? "invisible" : "visible";
 
+    let nameButtonClasses = appState.showUnitsBy === "Name" ? "mr-1 btn btn-secondary btn-sm" : "mr-1 btn btn-outline-secondary btn-sm";
+    let costButtonClasses = appState.showUnitsBy === "Cost" ? "mr-1 btn btn-secondary btn-sm" : "mr-1 btn btn-outline-secondary btn-sm";
+    let originButtonClasses = appState.showUnitsBy === "Origin" ? "mr-1 btn btn-secondary btn-sm" : "mr-1 btn btn-outline-secondary btn-sm";
+    let classButtonClasses = appState.showUnitsBy === "Class" ? "mr-1 btn btn-secondary btn-sm" : "mr-1 btn btn-outline-secondary btn-sm";
+    let craftableButtonClasses = appState.showItemsBy === "Craftable" ? "mr-1 btn btn-secondary btn-sm" : "mr-1 btn btn-outline-secondary btn-sm";
+    let tomeEmblemsButtonClasses = appState.showItemsBy === "Tome Emblems" ? "mr-1 btn btn-secondary btn-sm" : "mr-1 btn btn-outline-secondary btn-sm";
+    let radiantButtonClasses = appState.showItemsBy === "Radiant" ? "mr-1 btn btn-secondary btn-sm" : "mr-1 btn btn-outline-secondary btn-sm";
+    
     function appHandleDrop(dragOrigin, targetHexId) {
         let newAppState = appState;
         let updatedHex = {};
@@ -101,7 +113,6 @@ function App() {
                 break;
             case "BoardHex":
                 if (targetHexId === -1) {
-                    console.log(appState.heldObj.unitName + " is being dragged off Board and dropped into Units");
     
                     // updatedHex reassigned to objecte created with appState.heldObj.hexId to maintain hexId for BoardHex that is dragged off Board while resetting other properties
                     updatedHex = { 
@@ -120,8 +131,6 @@ function App() {
                     newAppState.boardState[updatedHex.hexId] = updatedHex;
 
                 } else {
-                    console.log(appState.heldObj.unitName + " dropped from BoardHex hexId " + appState.heldObj.hexId + " into hexId " + targetHexId);
-                    console.log("targetHexId " + targetHexId + " had " + appState.boardState[targetHexId].unitName + " previously");
     
                     // updatedHex reassigned to object created from newAppState.heldObj since property names match when dragging from Board component
                     updatedHex = {
@@ -220,7 +229,6 @@ function App() {
                     [removedUnitTrait]: traits[removedUnitTrait] - 1
                 };
             } else {
-                console.log("deleting " + removedUnitTrait);
                 delete traits[removedUnitTrait];  // *** seems to be working properly; may come back to update to improve time complexity ***
             }
         })
@@ -261,6 +269,26 @@ function App() {
         return appState;
     }
 
+    function selectUnitSort(event) {
+        updateAppState(appState => {
+            const newAppState = {
+                ...appState,
+                showUnitsBy: event.target.innerText
+            };
+            return newAppState;
+        });
+    }
+
+    function selectItemSort(event) {
+        updateAppState(appState => {
+            const newAppState = {
+                ...appState,
+                showItemsBy: event.target.innerText
+            };
+            return newAppState;
+        });
+    }
+
     return (
         <div>
             <div className="app-title">
@@ -269,9 +297,7 @@ function App() {
             <div className="container">
                 <div className="row">
                     <div className="col-xl-2 traits">
-                        <div className="">
-                            <Traits activeTraits={appState.traits}/>
-                        </div>
+                        <Traits activeTraits={appState.traits}/>
                     </div>
                     <div className="col-xl-10">
                         <div className="row pb-3">
@@ -293,25 +319,32 @@ function App() {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-xl-9 units">
-                                <div>Units</div>
-                                <div className="">
-                                    <Units 
-                                        heldObj={appState.heldObj}
-                                        appHandleDrop={appHandleDrop} 
-                                        appHandleDrag={appHandleDrag} 
-                                    />
+                            <div className="col-xl-8 units">
+                                <div className="mb-md-2">
+                                    <button type="button" className={nameButtonClasses} onClick={selectUnitSort}>Name</button>
+                                    <button type="button" className={costButtonClasses} onClick={selectUnitSort}>Cost</button>
+                                    <button type="button" className={originButtonClasses} onClick={selectUnitSort}>Origin</button>
+                                    <button type="button" className={classButtonClasses} onClick={selectUnitSort}>Class</button>
                                 </div>
+                                <Units 
+                                    heldObj={appState.heldObj}
+                                    showUnitsBy={appState.showUnitsBy}
+                                    appHandleDrop={appHandleDrop} 
+                                    appHandleDrag={appHandleDrag} 
+                                />
                             </div>
-                            <div className="col-xl-3 items">
-                                <div>Items</div>
-                                <div className="">
-                                    <Items 
-                                        heldObj={appState.heldObj}
-                                        appHandleDrop={appHandleDrop} 
-                                        appHandleDrag={appHandleDrag}
-                                    />
+                            <div className="col-xl-4 items">
+                                <div className="mb-md-2">
+                                    <button type="button" className={craftableButtonClasses} onClick={selectItemSort}>Craftable</button>
+                                    <button type="button" className={tomeEmblemsButtonClasses} onClick={selectItemSort}>Tome Emblems</button>
+                                    <button type="button" className={radiantButtonClasses} onClick={selectItemSort}>Radiant</button>
                                 </div>
+                                <Items 
+                                    heldObj={appState.heldObj}
+                                    showItemsBy={appState.showItemsBy}
+                                    appHandleDrop={appHandleDrop} 
+                                    appHandleDrag={appHandleDrag}
+                                />
                             </div>
                         </div>
                     </div>

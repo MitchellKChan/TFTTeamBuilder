@@ -154,11 +154,11 @@ body {
 }
 
 .items-drag-over {
-    background-color: #258349;
+    background-color: #1a6637;
 }
 
 .units-drag-over {
-    background-color: #2ea1b1;
+    background-color: #19717c;
 }
 
 .cost-1 img {
@@ -222,6 +222,6 @@ body {
 }
 
 .trait-level img {
-    max-height: 2em;
-    max-width: 2em;
+    max-height: 1.9em;
+    max-width: 1.9em;
 }

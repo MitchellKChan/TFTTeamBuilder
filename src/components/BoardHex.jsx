@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import Item from "./Item";
 
 function BoardHex(props) {
+    
+    // useState object to manage BoardHex background styling when a unit is dragged over it 
+    const [boardHexBackground, updateBoardHexBackground] = useState(false);
 
     // costBorder is the className string that updates the border of the BoardHex based on the cost of the unit currently in it
     const hexBorder = props.hexState.hasUnit ? "hex-cost-" + props.hexState.unitCost.toString() : "hex-empty";
@@ -17,18 +20,18 @@ function BoardHex(props) {
         props.appHandleDrop(event.dataTransfer.getData("dragOrigin"), props.hexState.hexId);
 
         // remove highlighting when a Unit, Item, or BoardHex state object is dropped
-        event.target.classList.remove("hex-drag-over");
+        updateBoardHexBackground(() => {return false;});
     }
 
-    function handleDragEnter(event) { // TODO: may need to refactor "hex-drag-over" styling trigger
+    function handleDragEnter(event) {
         event.preventDefault();
         if (!props.hexState.hasUnit) {
-            event.target.classList.add("hex-drag-over");
+            updateBoardHexBackground(() => {return true;});
         }
     }
-    function handleDragLeave(event) { // TODO: may need to refactor "hex-drag-over" styling removal trigger
+    function handleDragLeave(event) {
         event.preventDefault();
-        event.target.classList.remove("hex-drag-over");
+        updateBoardHexBackground(() => {return false;});
     }
 
     function dragfromBoardHex(event) { 
@@ -41,9 +44,9 @@ function BoardHex(props) {
 
     return (
         <div className="hex">
-            <div className={"hex-border "+ hexBorder}>
+            <div className={"hex-border " + hexBorder}>
                 <div    
-                    className="hex-inner hex-inner-empty"
+                    className={boardHexBackground ? "hex-inner hex-drag-over" : "hex-inner hex-inner-empty"}
                     onDrop={handleDrop} 
                     onDragOver={handleDragOver} 
                     onDragEnter={handleDragEnter} 
