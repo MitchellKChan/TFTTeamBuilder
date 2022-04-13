@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Unit from "./Unit"
-import units from "../set5patch1115/champions.json";
 import iconPath from "../iconPaths";
+import unitOrganizer from "../unitOrganizer";
 
 function Units(props) {
 
@@ -12,38 +12,7 @@ function Units(props) {
     const unitIcons = iconPath("unit");
 
     // create new array excluding Target Dummy unit (championId "TFT_TrainingDummy")
-    let championUnits = units.filter((unit) => {
-        return unit.championId !== "TFT_TrainingDummy";
-    });
-
-    // reorder or sort championUnits by props.showUnitsBy; can be one of the following:
-    //      - "Name": default value; show units in alphabetical order by name
-    //      - "Cost": show units from lowest to highest cost and then in alphabetical order by name
-    //      - "Origin": show units grouped by Origin (not implemented yet)
-    //      - "Class": show units groups by Class (not implemented yet)
-    switch (props.showUnitsBy) {
-        case ("Cost"):
-            championUnits = championUnits.sort((champion1, champion2) => {
-                if (champion1.cost > champion2.cost) {
-                    return 1;
-                }
-                if (champion1.cost < champion2.cost) {
-                    return -1;
-                }
-                return champion1.name.localeCompare(champion2.name);
-            });
-            break;
-        case ("Origin"):
-            console.log("Show units grouped by Origin");
-            break;
-        case ("Class"):
-            console.log("Show units grouped by Class");
-            break;
-        default:
-            console.log("Show units ordered by Name");
-            break;
-    }
-
+    let championUnits = unitOrganizer(props.showUnitsBy);
 
     function handleDragOver(event) {
         event.preventDefault();
@@ -80,17 +49,37 @@ function Units(props) {
             onDragEnter={handleDragEnter} 
             onDragLeave={handleDragLeave}
         >
-            {championUnits.map(unit => {
-                return (
-                    <Unit 
-                        key={unit.championId}
-                        iconPath={unitIcons[unit.championId]}
-                        unitInfo={unit}
-                        appHandleDrop={props.appHandleDrop}
-                        appHandleDrag={props.appHandleDrag}
-                    />
-                );
-            })}
+            {props.showUnitsBy === "Name" || props.showUnitsBy === "Cost" ? 
+                championUnits.map(unit => {
+                    return (
+                        <Unit 
+                            key={unit.championId}
+                            iconPath={unitIcons[unit.championId]}
+                            unitInfo={unit}
+                            appHandleDrop={props.appHandleDrop}
+                            appHandleDrag={props.appHandleDrag}
+                        />
+                    );
+                }) : 
+                championUnits.map(grouping => {
+                    return (
+                        <div key={grouping.name}>
+                            <div className="mb-1 unit-group">{grouping.name} ({grouping.units.length})</div>
+                                {grouping.units.map(unit => {
+                                    return (
+                                            <Unit 
+                                            key={unit.championId}
+                                            iconPath={unitIcons[unit.championId]}
+                                            unitInfo={unit}
+                                            appHandleDrop={props.appHandleDrop}
+                                            appHandleDrag={props.appHandleDrag}
+                                        />
+                                    );
+                                })}
+                        </div>
+                    );
+                })
+            }
         </div>
     );
 }

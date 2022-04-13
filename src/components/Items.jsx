@@ -1,17 +1,14 @@
 import React from "react";
 import Item from "./Item";
-import items from "../set5patch1115/items.json";
 import iconPath from "../iconPaths";
+import displayItems from "../displayItems";
 
 function Items(props) {
 
     // iconPath call with parameter "item" to save the object of Item icon paths to itemIcons
     const itemIcons = iconPath("item");
 
-    // create new array excluding component items (ids 1-9)
-    const completedItems = items.filter((item) => {
-        return item.id > 9;
-    });
+    let displayedItems = displayItems(props.showItemsBy);
 
     function handleDragOver(event) {
         event.preventDefault();
@@ -47,7 +44,7 @@ function Items(props) {
             onDragEnter={handleDragEnter} 
             onDragLeave={handleDragLeave}
         >
-            {completedItems.map(item => {
+            {displayedItems.map(item => {
                 return (
                     <Item 
                         key={item.id}

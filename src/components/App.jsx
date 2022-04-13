@@ -22,6 +22,7 @@ function App() {
     // trigger diplaying an error message when an erroneous action has occurred
     let errorMessageClasses = appState.errorMessage === "" ? "invisible" : "visible";
 
+    // className strings for how to display Unit Components and Item Components
     let nameButtonClasses = appState.showUnitsBy === "Name" ? "mr-1 btn btn-secondary btn-sm" : "mr-1 btn btn-outline-secondary btn-sm";
     let costButtonClasses = appState.showUnitsBy === "Cost" ? "mr-1 btn btn-secondary btn-sm" : "mr-1 btn btn-outline-secondary btn-sm";
     let originButtonClasses = appState.showUnitsBy === "Origin" ? "mr-1 btn btn-secondary btn-sm" : "mr-1 btn btn-outline-secondary btn-sm";
@@ -309,9 +310,9 @@ function App() {
                                     appHandleDrag={appHandleDrag}
                                 />
                             </div>
-                            <div className="col-lg-3 equipped-items">
-                                {/* <div className="">Equipped Items</div> */}
-                            </div>
+                            {/* <div className="col-lg-3 equipped-items">
+                                <div className="">Equipped Items</div>
+                            </div> */}
                         </div>
                         <div className="py-3">
                             <div className={"error-message p-1 " + errorMessageClasses}>
@@ -334,17 +335,28 @@ function App() {
                                 />
                             </div>
                             <div className="col-xl-4 items">
-                                <div className="mb-md-2">
-                                    <button type="button" className={craftableButtonClasses} onClick={selectItemSort}>Craftable</button>
-                                    <button type="button" className={tomeEmblemsButtonClasses} onClick={selectItemSort}>Tome Emblems</button>
-                                    <button type="button" className={radiantButtonClasses} onClick={selectItemSort}>Radiant</button>
+                                <div className="pb-2 row">
+                                    <div className="mb-md-2">
+                                        <button type="button" className={craftableButtonClasses} onClick={selectItemSort}>Craftable</button>
+                                        <button type="button" className={tomeEmblemsButtonClasses} onClick={selectItemSort}>Tome Emblems</button>
+                                        <button type="button" className={radiantButtonClasses} onClick={selectItemSort}>Radiant</button>
+                                    </div>
+                                    <Items 
+                                        heldObj={appState.heldObj}
+                                        showItemsBy={appState.showItemsBy}
+                                        appHandleDrop={appHandleDrop} 
+                                        appHandleDrag={appHandleDrag}
+                                    />
                                 </div>
-                                <Items 
-                                    heldObj={appState.heldObj}
-                                    showItemsBy={appState.showItemsBy}
-                                    appHandleDrop={appHandleDrop} 
-                                    appHandleDrag={appHandleDrag}
-                                />
+                                <div className="row trait">
+                                    <div className="description-title">TFT Team Builder Usage</div>
+                                    <ul>
+                                        <li>Units can be placed on the board by dragging them to a hex</li>
+                                        <li>Items can be equipped to units by dragging them an occupied hex</li>
+                                        <li>Units can be removed from the board by dragging them to the units area</li>
+                                        <li>Items can be removed from the board by dragging them to the items area</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>

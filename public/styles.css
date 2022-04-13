@@ -29,6 +29,11 @@ body {
     display: none;
 }
 
+.description-title {
+    font-size: 1.5em;
+    margin: auto;
+}
+
 /* Start Clippath hex styling method */
 /* method tutorial: https://css-tricks.com/hexagons-and-beyond-flexible-responsive-grid-patterns-sans-media-queries/ */
 
@@ -181,13 +186,18 @@ body {
     border-color: var(--cost5);
 }
 
+.units {
+    max-height: 45em;
+    overflow: auto;
+}
+
 .unit {
     position: relative;
     text-align: center;
 }
 
 .unit img {
-    max-height: 5em;
+    max-height: 4.4em;
     width: 100%;
     border-style: solid;
     border-width: 0.2em;
@@ -196,10 +206,15 @@ body {
 
 .unit-name {
     position: absolute;
-    font-size: 0.7em;
+    font-size: 0.64em;
     bottom: 0.4em;
     width: 100%;
     text-shadow: 1px 0 0 #000000, 0 -1px 0 #000000, 0 1px 0 #000000, -1px 0 0 #000000;
+}
+
+.unit-group {
+    background-color: #4b4b4b;
+    font-size: 0.9em;
 }
 
 .trait {
