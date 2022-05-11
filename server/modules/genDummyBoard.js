@@ -1,4 +1,4 @@
-function genEmptyBoard() {
+function genDummyBoard() {
     const initialBoard = [];
 
     // objects are pushed into initial board with their index as their hexId; 
@@ -15,7 +15,22 @@ function genEmptyBoard() {
             unitItems: {}
         });
     }
+
+    initialBoard[3] = {
+        ...initialBoard[3],
+        hasUnit: true,
+        unitId: "TFT5_Garen",
+        unitName: "Garen",
+        unitCost: 5,
+        // unitIcon: null,
+        unitTraits: [
+            "Set5_Victorious",
+            "Set5_Dawnbringer",
+            "Set5_Knight"
+        ]
+    }
     return initialBoard;
 }
 
-export default genEmptyBoard;
+exports.genDummyBoard = genDummyBoard;
+// export default genDummyBoard;

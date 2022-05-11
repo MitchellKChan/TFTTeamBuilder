@@ -10,7 +10,7 @@ import traits from "./set5patch1115/traits.json";
 function unitOrganizer(grouping) {
     // create new array excluding Target Dummy unit (championId "TFT_TrainingDummy")
     const championUnits = units.filter((unit) => {
-        return unit.championId != "TFT_TrainingDummy";
+        return unit.championId !== "TFT_TrainingDummy";
     });
 
     switch (grouping) {
@@ -48,7 +48,7 @@ function groupUnitsBy(groupBy, championUnits) {
         unitGroups[index] = {
             ...group,
             units: championUnits.filter((unit) => {
-                return unit.traits.indexOf(group.key) != -1;
+                return unit.traits.indexOf(group.key) !== -1;
             })
         };
     });
