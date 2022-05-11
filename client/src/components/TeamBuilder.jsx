@@ -7,39 +7,17 @@ import Units from "./Units";
 
 
 function TeamBuilder(props) {
-    // const [isFetching, updateFetching] = useState(true);
-    console.log(props.startingBoard);
 
     // useState object to manage overall state of the application
     const [appState, updateAppState] = useState({
-        boardState: genEmptyBoard(), // array of BoardHex state objects
-        // boardState: props.startingBoard.boardState,
-        unitsOnBoard: {}, // object of how many of each unit are in a BoardHex state in boardState
-        traits: {}, // object of active traits of units that are in a BoardHex state in boardState
+        boardState: props.startingBoard.boardState, // array of BoardHex state objects
+        unitsOnBoard: props.startingBoard.unitsOnBoard, // object of how many of each unit are in a BoardHex state in boardState
+        traits: props.startingBoard.traits, // object of active traits of units that are in a BoardHex state in boardState
         heldObj: {}, // state object for whatever is currently being dragged; the state can updated from a Unit, BoardHex, or Item component
         showUnitsBy: "Name", // string that notes how Unit Components are displayed in the Units Component; default is alphabetically by name
         showItemsBy: "Craftable", // string that notes how Items Components are displayed in the Item Component; default is craftable items
         errorMessage: "" // string explaining what error occurred on the page; is overwritten after the next valid action is processed
     });
-
-    // fetch("/api")
-    // .then(response => response.json())
-    // .then(data => {
-    //     if (isFetching) {
-    //         console.log("inside fetch");
-    //         updateAppState(() => {
-    //             return {
-    //                 ...appState,
-    //                 boardState: data.board
-    //             };
-    //         });
-    //     }
-
-    //     updateFetching(false);
-    // }).catch(e => {
-    //     console.log(e);
-    //     updateFetching(false);
-    // });
 
     // trigger diplaying an error message when an erroneous action has occurred
     let errorMessageClasses = appState.errorMessage === "" ? "invisible" : "visible";

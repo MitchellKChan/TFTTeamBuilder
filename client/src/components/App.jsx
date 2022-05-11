@@ -5,7 +5,7 @@ import TeamBuilder from "./TeamBuilder";
 function App() {
     const TeamBuilderLoading = loadTeamBuilder(TeamBuilder);
     const [appState, updateAppState] = useState({
-        isLoading: false,
+        isLoading: true,
         error: null,
         startingBoard: null
     });
@@ -50,7 +50,6 @@ function App() {
                 TFT Team Builder - Set 5.5
             </div>
             <TeamBuilderLoading isLoading={appState.isLoading} startingBoard={appState.startingBoard} />
-            {/* <TeamBuilder ></TeamBuilder> */}
         </div>
     );
 }
