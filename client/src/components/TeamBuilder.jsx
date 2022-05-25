@@ -291,7 +291,7 @@ function TeamBuilder(props) {
     }
 
     return (
-        <div>
+        <React.Fragment>
             <div className="container">
                 <div className="row">
                     <div className="col-xl-2 traits">
@@ -359,7 +359,7 @@ function TeamBuilder(props) {
                     </div>
                 </div>
             </div>
-        </div>
+        </React.Fragment>
 
     );
 }

@@ -2,12 +2,16 @@ const {v4: uuidv4} = require("uuid");
 const {validationResult} = require("express-validator");
 
 const genDummyBoard = require("../modules/genDummyBoard");
+const TeamComp = require("../models/teamComp");
 
 const HttpError = require("../models/http-error");
 
 let STARTER_TEAMCOMPS = [
     {
         id: "0",
+        userId: "u1",
+        compName: "Only Garen",
+        set: "Set5",
         boardState: genDummyBoard.genDummyBoard(),
         unitsOnBoard: {
             "Garen": 1
@@ -16,54 +20,79 @@ let STARTER_TEAMCOMPS = [
             "Set5_Victorious": 1,
             "Set5_Dawnbringer": 1,
             "Set5_Knight": 1
-        },
-        userId: "me"
+        }
     }
 ];
 
-function getTeamCompById(req, res, next) {
+async function getTeamCompById(req, res, next) {
     const id = req.params.id;
     const teamComp = STARTER_TEAMCOMPS.find(tc => {
         return tc.id === id;
     });
 
     if (!teamComp) {
-        throw new HttpError("Could not find a team composition with the provided id.", 404);
+        return next(
+            new HttpError("Could not find a team composition with the provided id.", 404)
+        );
     }
 
     res.json({teamComp});
 }
 
-function getTeamCompsByUserId(req, res, next) {
+async function getTeamCompsByUserId(req, res, next) {
     const userId = req.params.userId;
     const teamComps = STARTER_TEAMCOMPS.filter(tc => {
         return tc.userId === userId;
     });
 
     if (!teamComps || teamComps.length === 0) {
-        throw new HttpError("Could not find a team composition with the provided userId.", 404);
+        return next(
+            new HttpError("Could not find a team composition with the provided userId.", 404)
+        );
     }
 
     res.json({teamComps});
 
 }
 
-function createTeamComp(req, res, next) {
+async function createTeamComp(req, res, next) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        throw new HttpError("Invalid inputs passed, please check your data.", 422);
+        return next(
+            new HttpError("Invalid inputs passed, please check your data.", 422)
+        ); 
     }
 
-    const {boardState, unitsOnBoard, traits, userId} = req.body;
-    const createdTeamComp = {
-        id: uuidv4(),
-        boardState,
-        unitsOnBoard,
-        traits,
-        userId
-    };
+    // const {boardState, unitsOnBoard, traits, userId, compName} = req.body;
+    const {boardState, userId, compName} = req.body;
 
-    STARTER_TEAMCOMPS.push(createdTeamComp);
+    // const createdTeamComp = {
+    //     id: uuidv4(),
+    //     boardState,
+    //     unitsOnBoard,
+    //     traits,
+    //     userId
+    // };
+
+    const createdTeamComp = new TeamComp({
+        userId,
+        compName,
+        set: "Set5",
+        boardState
+        // unitsOnBoard: new Map(Object.entries(unitsOnBoard)),
+        // traits: new Map(Object.entries(traits))
+    });
+
+    // STARTER_TEAMCOMPS.push(createdTeamComp);
+    try {
+        await createdTeamComp.save();
+    } catch (err) {
+        const error = new HttpError(
+            "Creating team comp failed, please try again.",
+            500
+        );
+        return next(error);
+    }
 
     res.status(201).json({teamComp: createdTeamComp});
 }

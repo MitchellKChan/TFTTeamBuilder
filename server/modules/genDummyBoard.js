@@ -7,12 +7,12 @@ function genDummyBoard() {
         initialBoard.push({
             hexId: i,
             hasUnit: false,
-            unitId: null,
-            unitName: null,
-            unitCost: null,
-            unitIcon: null,
-            unitTraits: null,
-            unitItems: {}
+            unitId: "",
+            unitName: "",
+            unitCost: "",
+            unitIcon: "",
+            unitTraits: ""
+            // unitItems: {}
         });
     }
 

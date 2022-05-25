@@ -1,6 +1,6 @@
-
 const express = require("express");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
 
 const HttpError = require("./models/http-error");
 const championsRoutes = require("./routes/champions-routes");
@@ -41,6 +41,12 @@ app.use((error, req, res, next) => { // error handling middleware
   res.json({message: error.message || "An unknown error occurred."});
 });
 
-app.listen(PORT, () => {
-  console.log(`Server listening on ${PORT}`);
-});
+mongoose
+  .connect("mongodb+srv://mitchellkchan:WU1aSbPJUSayBnYe@cluster0.smgpb.mongodb.net/teamcompositions?retryWrites=true&w=majority")
+  .then(app.listen(PORT, () => {
+    console.log(`Server listening on ${PORT}`);
+  }))
+  .catch(err => {
+    console.log(err);
+  });
+
