@@ -9,10 +9,10 @@ function genDummyBoard() {
             hasUnit: false,
             unitId: "",
             unitName: "",
-            unitCost: "",
+            unitCost: null,
             unitIcon: "",
-            unitTraits: ""
-            // unitItems: {}
+            unitTraits: [],
+            unitItems: {}
         });
     }
 
@@ -22,7 +22,7 @@ function genDummyBoard() {
         unitId: "TFT5_Garen",
         unitName: "Garen",
         unitCost: 5,
-        // unitIcon: null,
+        unitIcon: "",
         unitTraits: [
             "Set5_Victorious",
             "Set5_Dawnbringer",

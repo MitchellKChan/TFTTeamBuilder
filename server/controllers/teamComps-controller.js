@@ -26,32 +26,40 @@ let STARTER_TEAMCOMPS = [
 
 async function getTeamCompById(req, res, next) {
     const id = req.params.id;
-    const teamComp = STARTER_TEAMCOMPS.find(tc => {
-        return tc.id === id;
-    });
 
-    if (!teamComp) {
-        return next(
-            new HttpError("Could not find a team composition with the provided id.", 404)
-        );
+    let teamComp;
+    try {
+        teamComp = await TeamComp.findById(id);
+    } catch (err) {
+        const error = new HttpError("Something went wrong, could not find a team composition.", 500);
+        return next(error);
     }
 
-    res.json({teamComp});
+    if (!teamComp) {
+        const error = new HttpError("Could not find a team composition with the provided id.", 404)
+        return next(error);
+    }
+
+    res.json({ teamComp: teamComp.toObject({ getters: true }) });
 }
 
 async function getTeamCompsByUserId(req, res, next) {
     const userId = req.params.userId;
-    const teamComps = STARTER_TEAMCOMPS.filter(tc => {
-        return tc.userId === userId;
-    });
+
+    let teamComps;
+    try {
+        teamComps = await TeamComp.find({ userId: userId });
+    } catch (err) {
+        const error = new HttpError("Fetching team compositions failed, please try again.", 500);
+        return next(error);
+    } 
 
     if (!teamComps || teamComps.length === 0) {
-        return next(
-            new HttpError("Could not find a team composition with the provided userId.", 404)
-        );
+        const error = new HttpError("Could not find a team composition with the provided username.", 404);
+        return next(error);
     }
 
-    res.json({teamComps});
+    res.json({ teamComps: teamComps.map(teamComp => teamComp.toObject({ getters: true })) });
 
 }
 
@@ -63,34 +71,21 @@ async function createTeamComp(req, res, next) {
         ); 
     }
 
-    // const {boardState, unitsOnBoard, traits, userId, compName} = req.body;
-    const {boardState, userId, compName} = req.body;
-
-    // const createdTeamComp = {
-    //     id: uuidv4(),
-    //     boardState,
-    //     unitsOnBoard,
-    //     traits,
-    //     userId
-    // };
+    const {userId, compName, set, boardState, unitsOnBoard, traits} = req.body;
 
     const createdTeamComp = new TeamComp({
         userId,
         compName,
-        set: "Set5",
-        boardState
-        // unitsOnBoard: new Map(Object.entries(unitsOnBoard)),
-        // traits: new Map(Object.entries(traits))
+        set,
+        boardState,
+        unitsOnBoard: new Map(Object.entries(unitsOnBoard)),
+        traits: new Map(Object.entries(traits))
     });
 
-    // STARTER_TEAMCOMPS.push(createdTeamComp);
     try {
         await createdTeamComp.save();
     } catch (err) {
-        const error = new HttpError(
-            "Creating team comp failed, please try again.",
-            500
-        );
+        const error = new HttpError("Creating team comp failed, please try again.", 500);
         return next(error);
     }
 

@@ -42,10 +42,12 @@ app.use((error, req, res, next) => { // error handling middleware
 });
 
 mongoose
-  .connect("mongodb+srv://mitchellkchan:WU1aSbPJUSayBnYe@cluster0.smgpb.mongodb.net/teamcompositions?retryWrites=true&w=majority")
-  .then(app.listen(PORT, () => {
-    console.log(`Server listening on ${PORT}`);
-  }))
+  .connect("mongodb+srv://mitchellkchan:WU1aSbPJUSayBnYe@cluster0.smgpb.mongodb.net/tftteambuilder?retryWrites=true&w=majority")
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server listening on ${PORT}`);
+    })
+  })
   .catch(err => {
     console.log(err);
   });

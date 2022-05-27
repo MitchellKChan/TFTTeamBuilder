@@ -14,9 +14,10 @@ router.post(
     [
         check("userId").not().isEmpty(),
         check("compName").not().isEmpty(),
-        check("boardState").not().isEmpty()
-        // check("unitsOnBoard").not().isEmpty(),
-        // check("traits").not().isEmpty()
+        check("set").not().isEmpty(),
+        check("boardState").not().isEmpty(),
+        check("unitsOnBoard").not().isEmpty(),
+        check("traits").not().isEmpty()
     ],
     teamCompsController.createTeamComp
 );
