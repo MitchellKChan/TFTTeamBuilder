@@ -1,10 +1,10 @@
 const champions = require("../tempSetInfo/champions.json");
 
 const HttpError = require("../models/http-error");
-const genDummyBoard = require("../modules/genDummyBoard");
+const genEmptyBoard = require("../modules/genEmptyBoard");
 
 function getGarenBoard(req, res, next) {
-    res.json(genDummyBoard.genDummyBoard());
+    res.json(genEmptyBoard.genEmptyBoard());
 }
 
 function getAllChampions(req, res, next) {

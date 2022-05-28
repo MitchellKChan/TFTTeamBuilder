@@ -1,37 +1,19 @@
-const {v4: uuidv4} = require("uuid");
 const {validationResult} = require("express-validator");
 
-const genDummyBoard = require("../modules/genDummyBoard");
+const genEmptyBoard = require("../modules/genEmptyBoard");
 const TeamComp = require("../models/teamComp");
 
 const HttpError = require("../models/http-error");
 
-let STARTER_TEAMCOMPS = [
-    {
-        id: "0",
-        userId: "u1",
-        compName: "Only Garen",
-        set: "Set5",
-        boardState: genDummyBoard.genDummyBoard(),
-        unitsOnBoard: {
-            "Garen": 1
-        },
-        traits: {
-            "Set5_Victorious": 1,
-            "Set5_Dawnbringer": 1,
-            "Set5_Knight": 1
-        }
-    }
-];
-
 async function getTeamCompById(req, res, next) {
     const id = req.params.id;
+    if (id === "0") return res.json({ teamComp: genEmptyBoard() });
 
     let teamComp;
     try {
         teamComp = await TeamComp.findById(id);
     } catch (err) {
-        const error = new HttpError("Something went wrong, could not find a team composition.", 500);
+        const error = new HttpError("Fetching team composition failed, please try again.", 500);
         return next(error);
     }
 
@@ -71,7 +53,7 @@ async function createTeamComp(req, res, next) {
         ); 
     }
 
-    const {userId, compName, set, boardState, unitsOnBoard, traits} = req.body;
+    const { userId, compName, set, boardState, unitsOnBoard, traits } = req.body;
 
     const createdTeamComp = new TeamComp({
         userId,
@@ -85,39 +67,60 @@ async function createTeamComp(req, res, next) {
     try {
         await createdTeamComp.save();
     } catch (err) {
-        const error = new HttpError("Creating team comp failed, please try again.", 500);
+        const error = new HttpError("Creating team composition failed, please try again.", 500);
         return next(error);
     }
 
     res.status(201).json({teamComp: createdTeamComp});
 }
 
-function updateTeamComp(req, res, next) {
-    const {boardState, unitsOnBoard, traits} = req.body;
+async function updateTeamComp(req, res, next) {
+    const { compName, boardState, unitsOnBoard, traits } = req.body;
     const id = req.params.id;
 
-    const updatedTeamComp = {
-        ...STARTER_TEAMCOMPS.find(teamComp => teamComp.id === id),
-        boardState: boardState,
-        unitsOnBoard: unitsOnBoard,
-        traits: traits
-    };
+    let updatedTeamComp;
+    try {
+        updatedTeamComp = await TeamComp.findById(id);
+    } catch (err) {
+        const error = new HttpError("Fetching team composition failed, please try again.", 500);
+        return next(error);
+    }
 
-    const teamCompIndex = STARTER_TEAMCOMPS.findIndex(teamComp => teamComp.id === id);
+    updatedTeamComp.compName = compName;
+    updatedTeamComp.boardState = boardState,
+    updatedTeamComp.unitsOnBoard = new Map(Object.entries(unitsOnBoard));
+    updatedTeamComp.traits = new Map(Object.entries(traits));
 
-    STARTER_TEAMCOMPS[teamCompIndex] = updatedTeamComp;
+    try {
+        updatedTeamComp.save();
+    } catch (err) {
+        const error = new HttpError("Could not update team composition, please try again.", 500);
+        return next(error);
+    }
 
-    res.status(200).json({teamComp: updatedTeamComp});
+    res.status(200).json({ teamComp: updatedTeamComp.toObject({ getters: true }) });
 
 
 }
 
-function deleteTeamComp(req, res, next) {
+async function deleteTeamComp(req, res, next) {
     const id = req.params.id;
-    if (!STARTER_TEAMCOMPS.find(teamComp => teamComp.id === id)) {
-        throw new HttpError("Could not a team comp with that id.", 404);
+
+    let teamComp;
+    try {
+        teamComp = await TeamComp.findById(id);
+    } catch (err) {
+        const error = new HttpError("Fetching team composition failed, please try again.", 500);
+        return next(error);
     }
-    STARTER_TEAMCOMPS = STARTER_TEAMCOMPS.filter(teamComp => teamComp.id != id);
+
+    try {
+        await teamComp.remove();
+    } catch (err) {
+        const error = new HttpError("Could not delete team composition, please try again.", 500);
+        return next(error);
+    }
+
     res.status(200).json({message: `Team comp with id ${id} is now deleted.`});
 }
 
