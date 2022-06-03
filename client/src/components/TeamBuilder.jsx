@@ -1,27 +1,87 @@
-import React, { useState, useEffect } from "react";
-import genEmptyBoard from "../genEmptyBoard";
+import React, { useState, useEffect, useContext } from "react";
 import Board from "./Board";
 import Items from "./Items";
 import Traits from "./Traits";
 import Units from "./Units";
+import Modal from "../shared/UIElements/Modal";
+import { AuthContext } from "../shared/context/authContext";
+import ErrorModal from "../shared/UIElements/ErrorModal";
+import Input from "../shared/FormElements/Input";
+import { useForm } from "../shared/hooks/formHook";
+import { VALIDATOR_MINLENGTH } from "../shared/util/validator";
+import { useHttpClient } from "../shared/hooks/httpHook";
+import LoadingSpinner from "../shared/UIElements/LoadingSpinner";
 
 
 function TeamBuilder(props) {
+    const auth = useContext(AuthContext);
+
+    // useForm hook to manage composition name when saving 
+    const [formState, updateFormState, setFormData] = useForm({
+        compName: {
+            value: "",
+            isValid: false
+        }
+    }, false);
+
+    // useState object to manage state of showing error when trying to save without logging in first
+    const [saveError, updateSaveError] = useState();
+    // useState object to manage state of showing save modal
+    const [showSaveForm, updateSaveForm] = useState(false);
+    function displaySaveForm() {
+        if (auth.isLoggedIn){
+            updateSaveForm(true);
+        } else {
+            updateSaveError("You must be logged in before saving a team composition.");
+        }
+    }
+    function cancelSaveForm() {
+        updateSaveForm(false);
+    }
+    function confirmSave() {
+        updateSaveForm(false);
+        console.log("Saving team composition");
+    }
+    function clearSaveError() {
+        updateSaveError(null);
+    }
+
+    const { isLoading, errorMessage, sendRequest, clearErrorMessage } = useHttpClient();
+    async function saveSubmitHandler(event) {
+        event.preventDefault();
+        
+        try {
+            await sendRequest(
+                "http://localhost:3001/api/teamComps",
+                "POST",
+                JSON.stringify({
+                    userId: auth.userId,
+                    compName: formState.inputs.compName.value,
+                    set: "Set5",
+                    boardState: appState.boardState,
+                    unitsOnBoard: appState.unitsOnBoard,
+                    traits: appState.traits
+                }),
+                { "Content-Type": "application/json" }
+            );
+            confirmSave();
+        } catch (err) {
+            // error handling is done in sendRequest
+        }
+    }
 
     // useState object to manage overall state of the application
     const [appState, updateAppState] = useState({
-        boardState: props.startingBoard.boardState, // array of BoardHex state objects
-        unitsOnBoard: props.startingBoard.unitsOnBoard, // object of how many of each unit are in a BoardHex state in boardState
-        traits: props.startingBoard.traits, // object of active traits of units that are in a BoardHex state in boardState
+        boardState: props.loadedTeamComp.boardState, // array of BoardHex state objects
+        unitsOnBoard: props.loadedTeamComp.unitsOnBoard, // object of how many of each unit are in a BoardHex state in boardState
+        traits: props.loadedTeamComp.traits, // object of active traits of units that are in a BoardHex state in boardState
         heldObj: {}, // state object for whatever is currently being dragged; the state can updated from a Unit, BoardHex, or Item component
         showUnitsBy: "Name", // string that notes how Unit Components are displayed in the Units Component; default is alphabetically by name
         showItemsBy: "Craftable", // string that notes how Items Components are displayed in the Item Component; default is craftable items
         errorMessage: "" // string explaining what error occurred on the page; is overwritten after the next valid action is processed
     });
-
     // trigger diplaying an error message when an erroneous action has occurred
     let errorMessageClasses = appState.errorMessage === "" ? "invisible" : "visible";
-
     // className strings for how to display Unit Components and Item Components
     let nameButtonClasses = appState.showUnitsBy === "Name" ? "mr-1 btn btn-secondary btn-sm" : "mr-1 btn btn-outline-secondary btn-sm";
     let costButtonClasses = appState.showUnitsBy === "Cost" ? "mr-1 btn btn-secondary btn-sm" : "mr-1 btn btn-outline-secondary btn-sm";
@@ -30,7 +90,6 @@ function TeamBuilder(props) {
     let craftableButtonClasses = appState.showItemsBy === "Craftable" ? "mr-1 btn btn-secondary btn-sm" : "mr-1 btn btn-outline-secondary btn-sm";
     let tomeEmblemsButtonClasses = appState.showItemsBy === "Tome Emblems" ? "mr-1 btn btn-secondary btn-sm" : "mr-1 btn btn-outline-secondary btn-sm";
     let radiantButtonClasses = appState.showItemsBy === "Radiant" ? "mr-1 btn btn-secondary btn-sm" : "mr-1 btn btn-outline-secondary btn-sm";
-    
     function appHandleDrop(dragOrigin, targetHexId) {
         let newAppState = appState;
         let updatedHex = {};
@@ -109,8 +168,6 @@ function TeamBuilder(props) {
                         }
                     }
                 }
-
-
                 break;
             case "BoardHex":
                 if (targetHexId === -1) {
@@ -150,12 +207,10 @@ function TeamBuilder(props) {
                     newAppState.boardState[targetHexId] = updatedHex;
                         
                 }
-
                 break;
             default:
                 console.log(appState.heldObj.unitName + " dropped from hex grid");
                 break;
-            
         }
         updateAppState(() => {
             const AppState = {
@@ -166,7 +221,6 @@ function TeamBuilder(props) {
             return AppState;
         });
     }
-
     function appHandleDrag(dragType, object) {
         // switch statement to validate what object type is being dragged (debugging purposes only)
         switch (dragType) {
@@ -191,7 +245,6 @@ function TeamBuilder(props) {
             return newAppState;
         });
     }
-
     // addTraits is called when appHandleDrop is passed "Unit" as its dragOrigin parameter in one of the following situations:
     //      - dragging a Unit Component from the Units component to a BoardHex component
     //      - clicking a Unit Component in the Units component **NOT IMPLEMENTED YET**
@@ -215,7 +268,6 @@ function TeamBuilder(props) {
 
         return traits;
     }
-
     // removeTraits is called when appHandleDrop is passed "Unit" or "BoardHex" as its dragOrigin parameter with their respective situations:
     //      - "Unit": dragging a Unit component from the Units component to a BoardHex component that is contains a unit (unit replacement)
     //      - "BoardHex": dragging a Unit component from a BoardHex component to the Units component (unit removal)
@@ -236,8 +288,6 @@ function TeamBuilder(props) {
 
         return traits;
     }
-
-    
     // removeUnit is called when appHandleDrop is passed "Unit" or "BoardHex" as its dragOrigin parameter with their respective situations:
     //      - "Unit": dragging a Unit component from the Units component to a BoardHex component that is contains a unit (unit replacement)
     //      - "BoardHex": dragging a Unit component from a BoardHex component to the Units component (unit removal)
@@ -259,7 +309,6 @@ function TeamBuilder(props) {
 
         return appState;
     }
-
     // removeItem is called when appHandleDrop is passed "Item" as its dragOrigin parameter in one of the following situations:
     //      - dragging an Item Component from one BoardHex Component to a different one (reequip item)
     //      - dragging an Item Component from a BoardHex Component to the Items Component (remove item)
@@ -269,7 +318,6 @@ function TeamBuilder(props) {
 
         return appState;
     }
-
     function selectUnitSort(event) {
         updateAppState(appState => {
             const newAppState = {
@@ -279,7 +327,6 @@ function TeamBuilder(props) {
             return newAppState;
         });
     }
-
     function selectItemSort(event) {
         updateAppState(appState => {
             const newAppState = {
@@ -290,8 +337,38 @@ function TeamBuilder(props) {
         });
     }
 
+
+
     return (
         <React.Fragment>
+            <ErrorModal error={saveError} onClear={clearSaveError}/>
+            {auth.isLoggedIn && 
+                <Modal 
+                    show={showSaveForm}
+                    onCancel={cancelSaveForm}
+                    header="What name would you like this new team composition to have?" 
+                    footerClass="" 
+                    footer={
+                        <React.Fragment>
+                            <button onClick={cancelSaveForm}>Cancel</button>
+                            <button onClick={saveSubmitHandler}>Save</button>
+                        </React.Fragment>
+                    }
+                >
+                    <form>
+                        <Input 
+                            element="input"
+                            id="compName"
+                            type="text"
+                            label="Composition Name"
+                            validators={[VALIDATOR_MINLENGTH(8)]}
+                            errorText="Please enter a valid composition name with at least 8 characters."
+                            onInput={updateFormState}
+                        />
+                    </form>
+                </Modal>
+            }
+            {isLoading && <LoadingSpinner asOverlay />}
             <div className="container">
                 <div className="row">
                     <div className="col-xl-2 traits">
@@ -299,7 +376,7 @@ function TeamBuilder(props) {
                     </div>
                     <div className="col-xl-10">
                         <div className="row pb-3">
-                            <div className="col-lg-9 board">
+                            <div className="col-lg-9">
                                 <Board 
                                     key={appState}
                                     boardState={appState.boardState} 
@@ -307,9 +384,11 @@ function TeamBuilder(props) {
                                     appHandleDrag={appHandleDrag}
                                 />
                             </div>
-                            {/* <div className="col-lg-3 equipped-items">
-                                <div className="">Equipped Items</div>
-                            </div> */}
+                            <div className="col-lg-3">
+                                <div>
+                                    <button className="btn btn-outline-success btn-sm save-button" onClick={displaySaveForm}>Save</button>
+                                </div>
+                            </div>
                         </div>
                         <div className="py-3">
                             <div className={"error-message p-1 " + errorMessageClasses}>
@@ -317,7 +396,7 @@ function TeamBuilder(props) {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-xl-8 units">
+                            <div className="col-xl-8">
                                 <div className="mb-md-2">
                                     <button type="button" className={nameButtonClasses} onClick={selectUnitSort}>Name</button>
                                     <button type="button" className={costButtonClasses} onClick={selectUnitSort}>Cost</button>
@@ -331,7 +410,7 @@ function TeamBuilder(props) {
                                     appHandleDrag={appHandleDrag} 
                                 />
                             </div>
-                            <div className="col-xl-4 items">
+                            <div className="col-xl-4">
                                 <div className="pb-2 row">
                                     <div className="mb-md-2">
                                         <button type="button" className={craftableButtonClasses} onClick={selectItemSort}>Craftable</button>

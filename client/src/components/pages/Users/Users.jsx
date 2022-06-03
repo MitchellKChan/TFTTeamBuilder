@@ -1,19 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import ErrorModal from "../../../shared/UIElements/ErrorModal";
+import LoadingSpinner from "../../../shared/UIElements/LoadingSpinner";
 import UsersList from "./UsersList";
-
-let STARTER_USERS = [
-    {
-        id: "u1",
-        name: "Luffy",
-        image: "https://i1.sndcdn.com/artworks-000056070659-e98l6i-t240x240.jpg",
-        teamComps: ["0"]
-    }
-];
+import { useHttpClient } from "../../../shared/hooks/httpHook";
 
 function Users(props) {
+    const { isLoading, errorMessage, sendRequest, clearErrorMessage } = useHttpClient();
+    const [loadedUsers, updateLoadedUsers] = useState();
+
+    useEffect(() => {
+        async function fetchUsers() {
+            try {
+                const responseData = await sendRequest("http://localhost:3001/api/users");
+
+                updateLoadedUsers(responseData.users);
+            } catch (err) {
+                // error handling is done in sendRequest
+            }  
+        };
+        fetchUsers();
+    }, [sendRequest]);
 
     return (
-        <UsersList items={STARTER_USERS} />
+        <React.Fragment>
+            <ErrorModal error={errorMessage} onClear={clearErrorMessage}/>
+            {isLoading && <LoadingSpinner asOverlay />}
+            {!isLoading && loadedUsers && <UsersList items={loadedUsers} />}
+        </React.Fragment>
     );
 }
 

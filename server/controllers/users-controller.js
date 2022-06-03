@@ -1,10 +1,9 @@
 const { validationResult } = require("express-validator");
-const {v4: uuidv4} = require("uuid");
 
 const HttpError = require("../models/http-error");
 const User = require("../models/user");
 
-async function getUsers(req, res, next) {
+async function getAllUsers(req, res, next) {
     let users;
     try {
         users = await User.find({}, "-password");
@@ -27,7 +26,7 @@ async function signup(req, res, next) {
     try {
         existingUser = await User.findOne({ email: email });
     } catch (err) {
-        const error = new HttpError("Signing up failed, please try again.", 500);
+        const error = new HttpError("Fetching user failed, please try again.", 500);
         return next(error);
     }
 
@@ -39,7 +38,8 @@ async function signup(req, res, next) {
     const createdUser = new User({
         username,
         email,
-        password // TODO: store encrypted password later on
+        password, // TODO: store encrypted password later on
+        teamComps: []
     });
 
     try {
@@ -50,7 +50,7 @@ async function signup(req, res, next) {
     }
 
 
-    res.status(201).json({user: createdUser.toObject({ getters: true })});
+    res.status(201).json({createdUser: createdUser.toObject({ getters: true })});
 }
 
 async function login(req, res, next) {
@@ -60,7 +60,7 @@ async function login(req, res, next) {
     try {
         identifiedUser = await User.findOne({ email: email });
     } catch (err) {
-        const error = new HttpError("Signing up failed, please try again.", 500);
+        const error = new HttpError("Fetching user failed, please try again.", 500);
         return next(error);
     }
 
@@ -69,9 +69,9 @@ async function login(req, res, next) {
         return next(error);
     }
 
-    res.json({message: "Logged in successfully!"});
+    res.json({message: "Logged in successfully!", loggedInUser: identifiedUser.toObject({ getters: true })});
 }
 
-exports.getUsers = getUsers;
+exports.getAllUsers = getAllUsers;
 exports.signup = signup;
 exports.login = login;

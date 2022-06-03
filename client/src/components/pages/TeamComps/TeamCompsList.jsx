@@ -14,14 +14,15 @@ function TeamCompsList(props) {
         <div>
             {props.items.map(teamComp => {
                 return <TeamCompItem 
-                    key={teamComp.id}
-                    id={teamComp.id} 
+                    key={teamComp._id}
+                    id={teamComp._id} 
                     userId={teamComp.userId} 
                     compName={teamComp.compName} 
                     set={teamComp.set}
                     boardState={teamComp.boardState} 
                     unitsOnBoard={teamComp.unitsOnBoard} 
                     traits={teamComp.traits} 
+                    onDelete={props.onDeleteTeamComp}
                 />
             })}
         </div>

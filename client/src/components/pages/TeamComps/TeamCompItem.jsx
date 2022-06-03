@@ -2,10 +2,14 @@ import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 
 import { AuthContext } from "../../../shared/context/authContext";
+import { useHttpClient } from "../../../shared/hooks/httpHook";
+import ErrorModal from "../../../shared/UIElements/ErrorModal";
+import LoadingSpinner from "../../../shared/UIElements/LoadingSpinner";
 import Modal from "../../../shared/UIElements/Modal";
 
 function TeamCompItem(props) {
     const auth = useContext(AuthContext);
+    const { isLoading, errorMessage, sendRequest, clearErrorMessage } = useHttpClient();
 
     const [showConfirmModal, updateShowConfirmModal] = useState(false);
 
@@ -17,13 +21,20 @@ function TeamCompItem(props) {
         updateShowConfirmModal(false);
     }
 
-    function confirmDelete() {
+    async function confirmDeleteHandler() {
         updateShowConfirmModal(false);
-        console.log("Deleting team composition");
+        try {
+            await sendRequest(`http://localhost:3001/api/teamComps/${props.id}`, "DELETE");
+            props.onDelete(props.id);
+        } catch (err) {
+            // error handling is done in sendRequest
+        }
     }
 
     return (
         <React.Fragment>
+            <ErrorModal error={errorMessage} onClear={clearErrorMessage} />
+            {isLoading && <LoadingSpinner asOverlay />}
             <Modal 
                 show={showConfirmModal}
                 onCancel={cancelDeleteWarning}
@@ -32,7 +43,7 @@ function TeamCompItem(props) {
                 footer={
                     <React.Fragment>
                         <button onClick={cancelDeleteWarning}>Cancel</button>
-                        <button onClick={confirmDelete}>Delete</button>
+                        <button onClick={confirmDeleteHandler}>Delete</button>
                     </React.Fragment>
                 }
 
@@ -58,16 +69,14 @@ function TeamCompItem(props) {
                     }) }
                 </ul>
                 <Link to={`/teambuilder/${props.id}`}>
-                    <button>Open in Team Builder</button>
+                    <button className="mr-1 btn btn-secondary btn-sm">Open in Team Builder</button>
                 </Link>
-                {auth.isLoggedIn && <Link to={`/${props.userId}/teamcomps`}>
-                    <button>{props.userId}</button>
+                {auth.isLoggedIn && <Link to={`/teamcomps/${props.userId}`}>
+                    <button className="mr-1 btn btn-secondary btn-sm">{props.userId}</button>
                 </Link>}
-                {auth.isLoggedIn && <button onClick={showDeleteWarning}>Delete</button>}
+                {auth.isLoggedIn && auth.userId === props.userId && <button onClick={showDeleteWarning}>Delete</button>}
             </div>
         </React.Fragment>
-
-
     );
 }
 

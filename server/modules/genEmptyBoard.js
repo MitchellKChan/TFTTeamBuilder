@@ -16,20 +16,6 @@ function genEmptyBoard() {
         });
     }
 
-    // boardState[3] = {
-    //     ...boardState[3],
-    //     hasUnit: true,
-    //     unitId: "TFT5_Garen",
-    //     unitName: "Garen",
-    //     unitCost: 5,
-    //     unitIcon: "",
-    //     unitTraits: [
-    //         "Set5_Victorious",
-    //         "Set5_Dawnbringer",
-    //         "Set5_Knight"
-    //     ]
-    // }
-    // return initialBoard;
     return ({
         id: "0",
         userId: "TFTTeamBuilder",
@@ -42,4 +28,3 @@ function genEmptyBoard() {
 }
 
 module.exports = genEmptyBoard;
-// export default genDummyBoard;

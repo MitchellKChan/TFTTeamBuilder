@@ -43,7 +43,7 @@ function Units(props) {
 
     return (
         <div 
-            className={unitsBackground ? "units-drag-over" : ""}
+            className={"units " + (unitsBackground ? "units-drag-over" : "")}
             onDrop={handleDrop}
             onDragOver={handleDragOver} 
             onDragEnter={handleDragEnter} 

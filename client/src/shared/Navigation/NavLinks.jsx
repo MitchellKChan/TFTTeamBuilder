@@ -16,7 +16,7 @@ function NavLinks(props) {
             </li>
             {auth.isLoggedIn && (
                 <li className={props.itemClasses}>
-                    <NavLink className="nav-link" to="/u1/teamcomps">My Team Comps</NavLink>
+                    <NavLink className="nav-link" to={`/teamcomps/${auth.userId}`}>My Team Comps</NavLink>
                 </li>
             )}
             <li className={props.itemClasses}>
@@ -29,7 +29,7 @@ function NavLinks(props) {
             )}
             {auth.isLoggedIn && (
                 <li className={props.itemClasses}>
-                    <button onClick={auth.logout}>Logout</button>
+                    <NavLink className="nav-link" to="/" onClick={auth.logout}>Log Out</NavLink>
                 </li>
             )}
         </ul>

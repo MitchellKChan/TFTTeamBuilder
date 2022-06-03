@@ -1,66 +1,43 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useHttpClient } from "../../../shared/hooks/httpHook";
+import ErrorModal from "../../../shared/UIElements/ErrorModal";
+import LoadingSpinner from "../../../shared/UIElements/LoadingSpinner";
 import TeamCompsList from "./TeamCompsList";
 
-let STARTER_TEAMCOMPS = [
-    {
-        id: "0",
-        userId: "u1",
-        compName: "Only Garen",
-        set: "Set5",
-        // boardState: genDummyBoard.genDummyBoard(),
-        unitsOnBoard: {
-            "Garen": 1
-        },
-        traits: {
-            "Set5_Victorious": 1,
-            "Set5_Dawnbringer": 1,
-            "Set5_Knight": 1
-        }
-    },
-    {
-        id: "1",
-        userId: "u1",
-        compName: "Only Gwen",
-        set: "Set5",
-        // boardState: genDummyBoard.genDummyBoard(),
-        unitsOnBoard: {
-            "Gwen": 1
-        },
-        traits: {
-            "Set5_Inanimate": 1,
-            "Set5_Mystic": 1,
-        }
-    },
-    {
-        id: "2",
-        userId: "u2",
-        compName: "Only Heimerdinger",
-        set: "Set5",
-        // boardState: genDummyBoard.genDummyBoard(),
-        unitsOnBoard: {
-            "Heimerdinger": 1
-        },
-        traits: {
-            "Set5_Draconic": 1,
-            "Set5_Renewer": 1,
-            "Set5_Caretaker": 1
-        }
-    }
-];
-
 function TeamComps() {
-    const { userId } = useParams();
-    if (userId) {
-        const loadedTeamComps = STARTER_TEAMCOMPS.filter(teamComp => teamComp.userId === userId);
+    const { isLoading, errorMessage, sendRequest, clearErrorMessage } = useHttpClient();
+    const [loadedTeamComps, updateLoadedTeamComps] = useState();
 
-        return (
-            <TeamCompsList items={loadedTeamComps}/>
+    const { userId } = useParams();
+
+    useEffect(() => {
+        async function fetchTeamComps() {
+            const userTeamComps = userId ? `/user/${userId}` : "";
+            try {
+                const responseData = await sendRequest("http://localhost:3001/api/teamComps" + userTeamComps);
+
+                updateLoadedTeamComps(responseData.teamComps);
+            } catch (err) {
+                // error handling is done in sendRequest
+            }  
+        };
+        fetchTeamComps();
+    }, [sendRequest, userId]);
+
+    function teamCompDeleteHandler(deletedTeamCompId) {
+        updateLoadedTeamComps(prevTeamComps => 
+            prevTeamComps.filter(teamComp => teamComp.id !== deletedTeamCompId)
         );
     }
     
     return (
-        <TeamCompsList items={STARTER_TEAMCOMPS}/>
+        <React.Fragment>
+            <ErrorModal error={errorMessage} onClear={clearErrorMessage} />
+            {isLoading && <LoadingSpinner asOverlay />}
+            {!isLoading && loadedTeamComps && <TeamCompsList items={loadedTeamComps} onDeleteTeamComp={teamCompDeleteHandler} />}
+        </React.Fragment>
+        
     );
 }
 

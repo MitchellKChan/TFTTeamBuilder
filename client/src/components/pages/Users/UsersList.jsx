@@ -16,8 +16,7 @@ function UsersList(props) {
                 return <UserItem 
                     key={user.id}
                     id={user.id} 
-                    name={user.name} 
-                    image={user.image}
+                    username={user.username} 
                     teamComps={user.teamComps}
                 />
             })}

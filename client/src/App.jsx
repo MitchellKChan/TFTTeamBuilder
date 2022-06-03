@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { BrowserRouter, Route, Navigate, Routes , Redirect} from "react-router-dom";
+import { BrowserRouter, Route, Navigate, Routes } from "react-router-dom";
 import loadTeamBuilder from "./loadTeamBuilder";
 import TeamBuilder from "./components/TeamBuilder";
 import Home from "./components/pages/Home";
@@ -8,15 +8,19 @@ import Users from "./components/pages/Users/Users";
 import MainNavigation from "./shared/Navigation/MainNavigation";
 import Auth from "./components/pages/Users/Auth";
 import { AuthContext } from "./shared/context/authContext";
+import TeamBuilderLoader from "./components/pages/TeamBuilder/TeamBuilderLoader";
 
 function App() {
 
     const [isLoggedIn, updateIsLoggedIn] = useState(false);
-    const login = useCallback(() => {
+    const [userId, updateUserId] = useState(null);
+    const login = useCallback((userId) => {
         updateIsLoggedIn(true);
+        updateUserId(userId);
     }, []);
     const logout = useCallback(() => {
         updateIsLoggedIn(false);
+        updateUserId(null);
     }, []);
 
 
@@ -29,11 +33,6 @@ function App() {
     });
 
     useEffect(() => {
-        // updateAppState({loading: true});
-        // const apiUrl = "http://localhost:3001/api/teamComps/0";
-        // fetch(apiUrl).then((res) => res.json()).then((teamCompResponse) => {
-        //     updateAppState({loading: false, startingBoard: teamCompResponse.teamComp});
-        // });
         async function sendRequest() {
             updateAppState({
                 ...appState,
@@ -76,11 +75,14 @@ function App() {
                 <Route path="/teamcomps" 
                     element={ <TeamComps /> } 
                 />
-                <Route path="/:userId/teamcomps" 
+                <Route path="/teamcomps/:userId" 
                         element={ <TeamComps /> } 
                 />
                 <Route path="/teambuilder" exact 
-                    element={ <TeamBuilderLoading isLoading={appState.isLoading} startingBoard={appState.startingBoard} /> } 
+                    element={ <TeamBuilderLoader /> } 
+                />
+                <Route path="/teambuilder/:teamCompId" 
+                    element={ <TeamBuilderLoader /> } 
                 />
                 <Route path="*" 
                     element={ <Navigate replace to="/" /> } 
@@ -100,7 +102,10 @@ function App() {
                     element={ <TeamComps /> } 
                 />
                 <Route path="/teambuilder" exact 
-                    element={ <TeamBuilderLoading isLoading={appState.isLoading} startingBoard={appState.startingBoard} /> } 
+                    element={ <TeamBuilderLoader /> } 
+                />
+                <Route path="/teambuilder/:teamCompId" 
+                    element={ <TeamBuilderLoader /> } 
                 />
                 <Route path="/auth" 
                     element={ <Auth /> } 
@@ -112,7 +117,7 @@ function App() {
         );
     }
     return (
-        <AuthContext.Provider value={{ isLoggedIn: isLoggedIn, login: login, logout: logout }}>
+        <AuthContext.Provider value={{ isLoggedIn: isLoggedIn, userId: userId, login: login, logout: logout }}>
             <BrowserRouter>
                 <MainNavigation />
                 <main>{routes}</main>

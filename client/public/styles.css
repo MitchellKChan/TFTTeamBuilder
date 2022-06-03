@@ -240,3 +240,7 @@ body {
     max-height: 1.9em;
     max-width: 1.9em;
 }
+
+.save-button {
+    float: right;
+}

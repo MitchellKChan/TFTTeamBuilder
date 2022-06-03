@@ -1,9 +1,26 @@
-const {validationResult} = require("express-validator");
+const { validationResult } = require("express-validator");
+const mongoose = require("mongoose");
 
 const genEmptyBoard = require("../modules/genEmptyBoard");
 const TeamComp = require("../models/teamComp");
+const User = require("../models/user");
 
 const HttpError = require("../models/http-error");
+
+async function getAllTeamComps(req, res, next) {
+    let teamComps;
+    try {
+        teamComps = await TeamComp.find({});
+    } catch (err) {
+        const error = new HttpError("Fetching team compositions failed, please try again.", 500);
+        return next(error);
+    }
+    res.json({
+        teamCompsMapped: teamComps.map(teamComp => teamComp.toObject({ getters: true })), // issue: return empty objects for unitsOnBoard and traits on frontend
+        teamComps // issue: causes unique "key" warning when rendering TeamCompItem on frontend
+    });
+    
+}
 
 async function getTeamCompById(req, res, next) {
     const id = req.params.id;
@@ -22,26 +39,32 @@ async function getTeamCompById(req, res, next) {
         return next(error);
     }
 
-    res.json({ teamComp: teamComp.toObject({ getters: true }) });
+    res.json({ 
+        teamCompMapped: teamComp.toObject({ getters: true }), 
+        teamComp
+    });
 }
 
 async function getTeamCompsByUserId(req, res, next) {
     const userId = req.params.userId;
 
-    let teamComps;
+    let userTeamComps;
     try {
-        teamComps = await TeamComp.find({ userId: userId });
+        userTeamComps = await User.findById(userId).populate("teamComps");
     } catch (err) {
         const error = new HttpError("Fetching team compositions failed, please try again.", 500);
         return next(error);
     } 
 
-    if (!teamComps || teamComps.length === 0) {
-        const error = new HttpError("Could not find a team composition with the provided username.", 404);
+    if (!userTeamComps || userTeamComps.teamComps.length === 0) {
+        const error = new HttpError("Could not find team compositions for the provided userId.", 404);
         return next(error);
     }
 
-    res.json({ teamComps: teamComps.map(teamComp => teamComp.toObject({ getters: true })) });
+    res.json({ 
+        teamCompsMapped: userTeamComps.teamComps.map(teamComp => teamComp.toObject({ getters: true })),
+        teamComps: userTeamComps.teamComps
+    });
 
 }
 
@@ -64,10 +87,30 @@ async function createTeamComp(req, res, next) {
         traits: new Map(Object.entries(traits))
     });
 
+    let user;
     try {
-        await createdTeamComp.save();
+        user = await User.findById(userId);
+    } catch (err) {
+        const error = new HttpError("Fetching user failed; please try again", 500);
+        return next(error);
+    }
+
+    if (!user) {
+        const error = new HttpError("Could not find user for provided id; please try again", 404);
+        return next(error);
+    }
+
+    try {
+        const session = await mongoose.startSession();
+        session.startTransaction();
+        await createdTeamComp.save({ session }); // { session } => { session: session }
+        user.teamComps.push(createdTeamComp); // add TeamComp id to teamComps array of user
+        await user.save({ session });
+        await session.commitTransaction();
+
     } catch (err) {
         const error = new HttpError("Creating team composition failed, please try again.", 500);
+        console.log(err);
         return next(error);
     }
 
@@ -108,22 +151,34 @@ async function deleteTeamComp(req, res, next) {
 
     let teamComp;
     try {
-        teamComp = await TeamComp.findById(id);
+        teamComp = await TeamComp.findById(id).populate("userId"); // identify property in User record to update
     } catch (err) {
         const error = new HttpError("Fetching team composition failed, please try again.", 500);
         return next(error);
     }
 
+    if (!teamComp) {
+        const error = new HttpError("Could not find team composition for provided id; please try again.", 404);
+        return next(error);
+    }
+
     try {
-        await teamComp.remove();
+        const session = await mongoose.startSession();
+        session.startTransaction();
+        await teamComp.remove({ session }); // { session } => { session: session }
+        teamComp.userId.teamComps.pull(teamComp);
+        await teamComp.userId.save({ session });
+        await session.commitTransaction();
     } catch (err) {
         const error = new HttpError("Could not delete team composition, please try again.", 500);
+        console.log(err);
         return next(error);
     }
 
     res.status(200).json({message: `Team comp with id ${id} is now deleted.`});
 }
 
+exports.getAllTeamComps = getAllTeamComps
 exports.createTeamComp = createTeamComp;
 exports.getTeamCompById = getTeamCompById;
 exports.getTeamCompsByUserId = getTeamCompsByUserId;

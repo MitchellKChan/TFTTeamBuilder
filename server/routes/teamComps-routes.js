@@ -5,6 +5,8 @@ const teamCompsController = require("../controllers/teamComps-controller");
 
 const router = express.Router();
 
+router.get("/", teamCompsController.getAllTeamComps);
+
 router.get("/:id", teamCompsController.getTeamCompById);
 
 router.get("/user/:userId", teamCompsController.getTeamCompsByUserId);
