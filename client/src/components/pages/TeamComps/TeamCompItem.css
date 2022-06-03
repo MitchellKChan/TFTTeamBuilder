@@ -1,0 +1,7 @@
+.team-comp-item {
+    border-style: solid;
+    border-width: 0.2em;
+    border-radius: 1em;
+    border-color: #000000;
+    width: 20%;
+}

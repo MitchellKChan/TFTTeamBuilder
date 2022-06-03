@@ -7,6 +7,8 @@ import ErrorModal from "../../../shared/UIElements/ErrorModal";
 import LoadingSpinner from "../../../shared/UIElements/LoadingSpinner";
 import Modal from "../../../shared/UIElements/Modal";
 
+import "./TeamCompItem.css";
+
 function TeamCompItem(props) {
     const auth = useContext(AuthContext);
     const { isLoading, errorMessage, sendRequest, clearErrorMessage } = useHttpClient();
@@ -50,10 +52,10 @@ function TeamCompItem(props) {
             >
                 <p>Do you want to proceed and delete this team composition?  This cannot be undone once confirmed.</p>
             </Modal>
-            <div>
-                Team Composition {props.compName}
+            <div className="team-comp-item ml-3 mb-3">
+                <h3>{props.compName}</h3>
                 {/* <TeamCompItemTraits /> */}
-                <ul>
+                <ul className="d-inline-block align-middle px-5">
                     {Object.keys(props.traits).map(trait => {
                         return (
                             <li>{trait}</li>
@@ -61,20 +63,20 @@ function TeamCompItem(props) {
                     }) }
                 </ul>
                 {/* <TeamCompItemUnits /> */}
-                <ul>
+                <ul className="d-inline-block align-middle px-5">
                     {Object.keys(props.unitsOnBoard).map(unit => {
                         return (
                             <li>{unit}</li>
                         );
                     }) }
                 </ul>
-                <Link to={`/teambuilder/${props.id}`}>
+                <Link to={`/teambuilder/${props.id}`} className="d-inline-block align-middle px-5">
                     <button className="mr-1 btn btn-secondary btn-sm">Open in Team Builder</button>
                 </Link>
-                {auth.isLoggedIn && <Link to={`/teamcomps/${props.userId}`}>
+                {auth.isLoggedIn && <Link to={`/teamcomps/${props.userId}`} className="d-inline-block align-middle px-5">
                     <button className="mr-1 btn btn-secondary btn-sm">{props.userId}</button>
                 </Link>}
-                {auth.isLoggedIn && auth.userId === props.userId && <button onClick={showDeleteWarning}>Delete</button>}
+                {auth.isLoggedIn && auth.userId === props.userId && <button onClick={showDeleteWarning} className="d-inline-block align-middle px-5">Delete</button>}
             </div>
         </React.Fragment>
     );

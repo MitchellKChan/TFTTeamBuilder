@@ -369,7 +369,7 @@ function TeamBuilder(props) {
                 </Modal>
             }
             {isLoading && <LoadingSpinner asOverlay />}
-            <div className="container">
+            <div className="container mt-3">
                 <div className="row">
                     <div className="col-xl-2 traits">
                         <Traits activeTraits={appState.traits}/>

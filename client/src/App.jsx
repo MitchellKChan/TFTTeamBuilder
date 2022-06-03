@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Route, Navigate, Routes } from "react-router-dom";
-import loadTeamBuilder from "./loadTeamBuilder";
-import TeamBuilder from "./components/TeamBuilder";
-import Home from "./components/pages/Home";
+import loadTeamBuilder from "./loadTeamBuilder"; // loadTeamBuilder can be deleted
+import Home from "./components/pages/Home/Home";
 import TeamComps from "./components/pages/TeamComps/TeamComps";
 import Users from "./components/pages/Users/Users";
 import MainNavigation from "./shared/Navigation/MainNavigation";
@@ -22,44 +21,6 @@ function App() {
         updateIsLoggedIn(false);
         updateUserId(null);
     }, []);
-
-
-
-    const TeamBuilderLoading = loadTeamBuilder(TeamBuilder);
-    const [appState, updateAppState] = useState({
-        isLoading: true,
-        error: null,
-        startingBoard: null
-    });
-
-    useEffect(() => {
-        async function sendRequest() {
-            updateAppState({
-                ...appState,
-                isLoading: true
-            });
-
-            try {
-                const response = await fetch("http://localhost:3001/api/teamComps/0");
-
-                const responseData = await response.json();
-                updateAppState({
-                    ...appState,
-                    startingBoard: responseData.teamComp,
-                    isLoading: false
-                });
-            } catch (err) {
-                updateAppState({
-                    ...appState,
-                    isLoading: false,
-                    error: err.message
-                });
-            }
-
-        };
-        sendRequest();
-    }, []);
-
 
     let routes;
 

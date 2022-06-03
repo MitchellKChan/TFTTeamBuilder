@@ -1,0 +1,23 @@
+.home {
+    position: relative;
+    text-align: center;
+}
+
+.background {
+    opacity: 0.3;
+    z-index: 10;
+    width: 100%;
+    display: block;
+    margin: auto;
+}
+
+.welcome {
+    position: absolute;
+    z-index: 50;
+    display: block;
+    width: 60%;
+    top: 8em;
+    left: 0;
+    right: 0;
+    margin: auto;
+}

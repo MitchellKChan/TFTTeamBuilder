@@ -11,7 +11,7 @@ function TeamCompsList(props) {
     }
 
     return (
-        <div>
+        <div className="mt-3">
             {props.items.map(teamComp => {
                 return <TeamCompItem 
                     key={teamComp._id}

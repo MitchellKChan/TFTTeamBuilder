@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"; // TODO: this file can be deleted
 
 function Header(props) {
     return (
