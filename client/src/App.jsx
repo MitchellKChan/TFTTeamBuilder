@@ -10,21 +10,23 @@ import { AuthContext } from "./shared/context/authContext";
 import TeamBuilderLoader from "./components/pages/TeamBuilder/TeamBuilderLoader";
 
 function App() {
-
-    const [isLoggedIn, updateIsLoggedIn] = useState(false);
+    const [token, updateToken] = useState(false);
     const [userId, updateUserId] = useState(null);
-    const login = useCallback((userId) => {
-        updateIsLoggedIn(true);
+    const [username, updateUsername] = useState(null);
+    const login = useCallback((userId, username, token) => {
+        updateToken(token);
         updateUserId(userId);
+        updateUsername(username);
     }, []);
     const logout = useCallback(() => {
-        updateIsLoggedIn(false);
+        updateToken(null);
         updateUserId(null);
+        updateUsername(null);
     }, []);
 
     let routes;
 
-    if (isLoggedIn) {
+    if (token) {
         routes = (
             <Routes>
                 <Route path="/" exact 
@@ -36,7 +38,7 @@ function App() {
                 <Route path="/teamcomps" 
                     element={ <TeamComps /> } 
                 />
-                <Route path="/teamcomps/:userId" 
+                <Route path="/teamcomps/:creator" 
                         element={ <TeamComps /> } 
                 />
                 <Route path="/teambuilder" exact 
@@ -55,9 +57,6 @@ function App() {
             <Routes>
                 <Route path="/" exact 
                     element={ <Home /> } 
-                />
-                <Route path="/users" 
-                    element={ <Users /> } 
                 />
                 <Route path="/teamcomps" 
                     element={ <TeamComps /> } 
@@ -78,7 +77,16 @@ function App() {
         );
     }
     return (
-        <AuthContext.Provider value={{ isLoggedIn: isLoggedIn, userId: userId, login: login, logout: logout }}>
+        <AuthContext.Provider 
+            value={{ 
+                isLoggedIn: !!token, 
+                token: token,
+                username: username,
+                userId: userId, 
+                login: login, 
+                logout: logout 
+            }}
+        >
             <BrowserRouter>
                 <MainNavigation />
                 <main>{routes}</main>

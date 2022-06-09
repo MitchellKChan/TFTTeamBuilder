@@ -1,16 +1,18 @@
-import React, { useState, useEffect, useContext } from "react";
-import Board from "./Board";
-import Items from "./Items";
-import Traits from "./Traits";
-import Units from "./Units";
-import Modal from "../shared/UIElements/Modal";
-import { AuthContext } from "../shared/context/authContext";
-import ErrorModal from "../shared/UIElements/ErrorModal";
-import Input from "../shared/FormElements/Input";
-import { useForm } from "../shared/hooks/formHook";
-import { VALIDATOR_MINLENGTH } from "../shared/util/validator";
-import { useHttpClient } from "../shared/hooks/httpHook";
-import LoadingSpinner from "../shared/UIElements/LoadingSpinner";
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+
+import Board from "../../Board";
+import Items from "../../Items";
+import Traits from "../../Traits";
+import Units from "../../Units";
+import Modal from "../../../shared/UIElements/Modal";
+import { AuthContext } from "../../../shared/context/authContext";
+import ErrorModal from "../../../shared/UIElements/ErrorModal";
+import Input from "../../../shared/FormElements/Input";
+import { useForm } from "../../../shared/hooks/formHook";
+import { VALIDATOR_MINLENGTH } from "../../../shared/util/validator";
+import { useHttpClient } from "../../../shared/hooks/httpHook";
+import LoadingSpinner from "../../../shared/UIElements/LoadingSpinner";
 
 
 function TeamBuilder(props) {
@@ -26,7 +28,7 @@ function TeamBuilder(props) {
 
     // useState object to manage state of showing error when trying to save without logging in first
     const [saveError, updateSaveError] = useState();
-    // useState object to manage state of showing save modal
+    // useState object to manage state of showing save dropdown
     const [showSaveForm, updateSaveForm] = useState(false);
     function displaySaveForm() {
         if (auth.isLoggedIn){
@@ -40,11 +42,12 @@ function TeamBuilder(props) {
     }
     function confirmSave() {
         updateSaveForm(false);
-        console.log("Saving team composition");
     }
     function clearSaveError() {
         updateSaveError(null);
     }
+
+    const navigate = useNavigate(); // redirect to newly created team composition in team builder
 
     const { isLoading, errorMessage, sendRequest, clearErrorMessage } = useHttpClient();
     async function saveSubmitHandler(event) {
@@ -56,15 +59,20 @@ function TeamBuilder(props) {
                 "POST",
                 JSON.stringify({
                     userId: auth.userId,
+                    creator: auth.username,
                     compName: formState.inputs.compName.value,
                     set: "Set5",
                     boardState: appState.boardState,
                     unitsOnBoard: appState.unitsOnBoard,
                     traits: appState.traits
                 }),
-                { "Content-Type": "application/json" }
+                {
+                    "Content-Type": "application/json", 
+                    Authorization: "Bearer " + auth.token
+                }
             );
             confirmSave();
+            navigate(`/teamcomps/${auth.username}`);
         } catch (err) {
             // error handling is done in sendRequest
         }
@@ -209,7 +217,6 @@ function TeamBuilder(props) {
                 }
                 break;
             default:
-                console.log(appState.heldObj.unitName + " dropped from hex grid");
                 break;
         }
         updateAppState(() => {
@@ -222,21 +229,6 @@ function TeamBuilder(props) {
         });
     }
     function appHandleDrag(dragType, object) {
-        // switch statement to validate what object type is being dragged (debugging purposes only)
-        switch (dragType) {
-            case "Unit":
-                console.log(object.unitName + " being dragged from Units component");
-                break;
-            case "Item":
-                console.log(object.name + " being dragged from Items component");
-                break;
-            case "BoardHex":
-                console.log(object.unitName + " being dragged from Board component");
-                break;
-            default:
-                console.log(object + " being dragged from hex grid");
-                break;
-        }
         updateAppState(appState => {
             const newAppState = {
                 ...appState,
@@ -351,7 +343,7 @@ function TeamBuilder(props) {
                     footer={
                         <React.Fragment>
                             <button onClick={cancelSaveForm}>Cancel</button>
-                            <button onClick={saveSubmitHandler}>Save</button>
+                            <button disabled={!formState.isValid} onClick={saveSubmitHandler}>Save</button>
                         </React.Fragment>
                     }
                 >
@@ -370,6 +362,7 @@ function TeamBuilder(props) {
             }
             {isLoading && <LoadingSpinner asOverlay />}
             <div className="container mt-3">
+                <div className="mb-3">{props.loadedTeamComp.compName}</div>
                 <div className="row">
                     <div className="col-xl-2 traits">
                         <Traits activeTraits={appState.traits}/>

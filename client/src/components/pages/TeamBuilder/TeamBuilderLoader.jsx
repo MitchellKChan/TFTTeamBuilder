@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useHttpClient } from "../../../shared/hooks/httpHook";
 import ErrorModal from "../../../shared/UIElements/ErrorModal";
 import LoadingSpinner from "../../../shared/UIElements/LoadingSpinner";
-import TeamBuilder from "../../TeamBuilder";
+import TeamBuilder from "./TeamBuilder";
 
 function TeamBuilderLoader() {
     const { isLoading, errorMessage, sendRequest, clearErrorMessage } = useHttpClient();
@@ -16,7 +16,6 @@ function TeamBuilderLoader() {
             const id = teamCompId ? teamCompId : "0";
             try {
                 const responseData = await sendRequest("http://localhost:3001/api/teamComps/" + id);
-                console.log(responseData.teamComp);
                 updateLoadedTeamComp(responseData.teamComp);
                 
             } catch (err) {

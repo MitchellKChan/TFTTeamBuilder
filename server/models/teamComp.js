@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 
 const teamCompSchema = new Schema({
     userId: { type: mongoose.Types.ObjectId, required: true, ref: "User" },
+    creator: { type: String, required: true },
     compName: { type: String, required: true },
     set: { type: String, required: true },
     boardState: { type: [

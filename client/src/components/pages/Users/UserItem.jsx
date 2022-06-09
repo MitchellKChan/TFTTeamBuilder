@@ -7,7 +7,7 @@ import "./UserItem.css";
 function UserItem(props) {
     return (
         <div className="mt-3">
-            <Link to={`/${props.id}/teamcomps`}>
+            <Link to={`/teamcomps/${props.username}`}>
                 <Card className="mb-2 user-item">
                     <h3>{props.username}</h3>
                     <h5>

@@ -2,6 +2,7 @@ const express = require("express");
 const { check } = require("express-validator");
 
 const teamCompsController = require("../controllers/teamComps-controller");
+const checkAuth = require("../middleware/check-auth");
 
 const router = express.Router();
 
@@ -9,7 +10,9 @@ router.get("/", teamCompsController.getAllTeamComps);
 
 router.get("/:id", teamCompsController.getTeamCompById);
 
-router.get("/user/:userId", teamCompsController.getTeamCompsByUserId);
+router.get("/user/:creator", teamCompsController.getTeamCompsByUserId);
+
+router.use(checkAuth);
 
 router.post(
     "/",

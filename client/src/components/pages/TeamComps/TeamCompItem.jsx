@@ -26,7 +26,14 @@ function TeamCompItem(props) {
     async function confirmDeleteHandler() {
         updateShowConfirmModal(false);
         try {
-            await sendRequest(`http://localhost:3001/api/teamComps/${props.id}`, "DELETE");
+            await sendRequest(
+                `http://localhost:3001/api/teamComps/${props.id}`, 
+                "DELETE",
+                null,
+                {
+                    Authorization: "Bearer " + auth.token
+                }
+            );
             props.onDelete(props.id);
         } catch (err) {
             // error handling is done in sendRequest
@@ -48,7 +55,6 @@ function TeamCompItem(props) {
                         <button onClick={confirmDeleteHandler}>Delete</button>
                     </React.Fragment>
                 }
-
             >
                 <p>Do you want to proceed and delete this team composition?  This cannot be undone once confirmed.</p>
             </Modal>
@@ -58,7 +64,7 @@ function TeamCompItem(props) {
                 <ul className="d-inline-block align-middle px-5">
                     {Object.keys(props.traits).map(trait => {
                         return (
-                            <li>{trait}</li>
+                            <li key={trait}>{trait}</li>
                         );
                     }) }
                 </ul>
@@ -66,15 +72,15 @@ function TeamCompItem(props) {
                 <ul className="d-inline-block align-middle px-5">
                     {Object.keys(props.unitsOnBoard).map(unit => {
                         return (
-                            <li>{unit}</li>
+                            <li key={unit}>{unit}</li>
                         );
                     }) }
                 </ul>
                 <Link to={`/teambuilder/${props.id}`} className="d-inline-block align-middle px-5">
                     <button className="mr-1 btn btn-secondary btn-sm">Open in Team Builder</button>
                 </Link>
-                {auth.isLoggedIn && <Link to={`/teamcomps/${props.userId}`} className="d-inline-block align-middle px-5">
-                    <button className="mr-1 btn btn-secondary btn-sm">{props.userId}</button>
+                {auth.isLoggedIn && <Link to={`/teamcomps/${props.creator}`} className="d-inline-block align-middle px-5">
+                    <button className="mr-1 btn btn-secondary btn-sm">{props.creator}</button>
                 </Link>}
                 {auth.isLoggedIn && auth.userId === props.userId && <button onClick={showDeleteWarning} className="d-inline-block align-middle px-5">Delete</button>}
             </div>

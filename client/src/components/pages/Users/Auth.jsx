@@ -31,16 +31,16 @@ function Auth() {
 
         if (isLoginMode) {
             try {
-                const responseData = await sendRequest(
-                    "http://localhost:3001/api/users/login",
+                const responseData = await sendRequest( // build/runtime variable later on, not hard-coded to local server
+                    "http://localhost:3001/api/users/login", // should use https later on
                     "POST",
                     JSON.stringify({
                         email: formState.inputs.email.value,
-                        password: formState.inputs.password.value
+                        password: formState.inputs.password.value // SSL certificates for sensitive info
                     }),
                     { "Content-Type": "application/json" }
                 );
-                auth.login(responseData.loggedInUser.id);
+                auth.login(responseData.userId, responseData.username, responseData.token);
             } catch (err) {
                 // error handling is done in sendRequest
             }
@@ -56,8 +56,7 @@ function Auth() {
                     }),
                     { "Content-Type": "application/json" }
                 );
-                console.log(responseData);
-                auth.login(responseData.createdUser.id);
+                auth.login(responseData.userId, responseData.username, responseData.token);
             } catch (err) {
                 // error handling is done in sendRequest
             }

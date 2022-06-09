@@ -9,7 +9,7 @@ function Home(props) {
                 <h1>Welcome to TFT Team Builder!</h1>
                 <p className="lead">
                     This application is a personal project of mine where you can build and save your own team compositions from 
-                    previous Teamfight Tactics sets (currently only Set 5.5 but more will be added later).  All feedback is Welcome!
+                    previous Teamfight Tactics sets (currently only Set 5.5 but more will be added later).  All feedback is welcome!
                 </p>
                 <p className="lead">
                     <a href="https://github.com/MitchellKChan/TFTTeamBuilder" className="btn btn-lg btn-secondary fw-bold">GitHub repository</a>

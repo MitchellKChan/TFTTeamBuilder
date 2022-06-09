@@ -17,6 +17,7 @@ function TeamCompsList(props) {
                     key={teamComp._id}
                     id={teamComp._id} 
                     userId={teamComp.userId} 
+                    creator={teamComp.creator}
                     compName={teamComp.compName} 
                     set={teamComp.set}
                     boardState={teamComp.boardState} 

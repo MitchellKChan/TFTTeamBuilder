@@ -46,11 +46,11 @@ async function getTeamCompById(req, res, next) {
 }
 
 async function getTeamCompsByUserId(req, res, next) {
-    const userId = req.params.userId;
+    const creator = req.params.creator;
 
     let userTeamComps;
     try {
-        userTeamComps = await User.findById(userId).populate("teamComps");
+        userTeamComps = await User.findOne({ username: creator }).populate("teamComps");
     } catch (err) {
         const error = new HttpError("Fetching team compositions failed, please try again.", 500);
         return next(error);
@@ -76,10 +76,11 @@ async function createTeamComp(req, res, next) {
         ); 
     }
 
-    const { userId, compName, set, boardState, unitsOnBoard, traits } = req.body;
+    const { userId, creator, compName, set, boardState, unitsOnBoard, traits } = req.body;
 
     const createdTeamComp = new TeamComp({
         userId,
+        creator,
         compName,
         set,
         boardState,
@@ -110,11 +111,10 @@ async function createTeamComp(req, res, next) {
 
     } catch (err) {
         const error = new HttpError("Creating team composition failed, please try again.", 500);
-        console.log(err);
         return next(error);
     }
 
-    res.status(201).json({teamComp: createdTeamComp});
+    res.status(201).json({ id: createdTeamComp.id, creator: createdTeamComp.creator });
 }
 
 async function updateTeamComp(req, res, next) {

@@ -9,11 +9,11 @@ function TeamComps() {
     const { isLoading, errorMessage, sendRequest, clearErrorMessage } = useHttpClient();
     const [loadedTeamComps, updateLoadedTeamComps] = useState();
 
-    const { userId } = useParams();
+    const { creator } = useParams();
 
     useEffect(() => {
         async function fetchTeamComps() {
-            const userTeamComps = userId ? `/user/${userId}` : "";
+            const userTeamComps = creator ? `/user/${creator}` : "";
             try {
                 const responseData = await sendRequest("http://localhost:3001/api/teamComps" + userTeamComps);
 
@@ -23,7 +23,7 @@ function TeamComps() {
             }  
         };
         fetchTeamComps();
-    }, [sendRequest, userId]);
+    }, [sendRequest, creator]);
 
     function teamCompDeleteHandler(deletedTeamCompId) {
         updateLoadedTeamComps(prevTeamComps => 
