@@ -1,4 +1,5 @@
 import React from "react";
+import TraitSymbol from "../shared/TraitSymbol/TraitSymbol";
 
 function Trait(props) {
 
@@ -9,11 +10,12 @@ function Trait(props) {
     }
     return (
         <div className={"trait p-2 my-3"}>
-            <div className="d-inline-block align-middle px-1">
-                <div className="trait-level" style={{ backgroundImage: `url(${props.traitLevel})` }}> 
-                    <img src={props.iconPath} draggable="false" alt={props.name} data-toggle="tooltip" title={props.name}></img>
-                </div>
-            </div>
+            <TraitSymbol 
+                traitLevel={props.traitLevel}
+                iconPath={props.iconPath}
+                traitInfo={props.traitInfo}
+                classNames={props.classNames}
+            />
             <div className="d-inline-block align-middle px-1">
                 <span>{props.traitInfo.name}</span>
                 <div>{props.count} / {nextBreakpoint.min}</div>

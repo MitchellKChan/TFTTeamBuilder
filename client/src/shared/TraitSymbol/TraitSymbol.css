@@ -1,0 +1,29 @@
+.teamcomp-trait-level {
+    height: 2.3em;
+    width: 2.3em;
+    background-repeat: no-repeat;
+    background-size: contain;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+
+.teamcomp-trait-level img {
+    max-height: 1.3em;
+    max-width: 1.3em;
+}
+
+.teambuilder-trait-level {
+    height: 3.5em;
+    width: 3.5em;
+    background-repeat: no-repeat;
+    background-size: contain;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+
+.teambuilder-trait-level img {
+    max-height: 1.9em;
+    max-width: 1.9em;
+}

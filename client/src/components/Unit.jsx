@@ -1,9 +1,7 @@
 import React from "react";
+import UnitIcon from "../shared/UnitIcon/UnitIcon";
 
 function Unit(props) {
-
-    // costBorder is the className string that determines the border of the Unit based on its cost
-    const costBorder = ("cost-" + props.unitInfo.cost.toString());
 
     function dragFromUnitPool(event) {
         event.dataTransfer.setData("dragOrigin", "Unit");
@@ -21,12 +19,14 @@ function Unit(props) {
         props.appHandleDrag("Unit", dragObject);
     }
     return (
-        <div className="d-inline-block mr-md-1 mb-md-1">
-            <div className={"unit " + costBorder} draggable="true" onDragStart={dragFromUnitPool}>
-                <img src={props.iconPath} alt={props.unitInfo.name} ></img>
-                <div className="unit-name">{props.unitInfo.name}</div>
-            </div>
-        </div>
+        <UnitIcon 
+            cost={props.unitInfo.cost}
+            dragFromUnitPool={dragFromUnitPool}
+            teamBuilderDisplay
+            name={props.unitInfo.name}
+            iconPath={props.iconPath}
+            classNames={"unit teambuilder-unit"}
+        />
     );
 }
 

@@ -2,12 +2,12 @@ import React from "react";
 import Trait from "./Trait";
 import traits from "../set5patch1115/traits.json";
 import iconPath from "../iconPaths";
+import TraitSymbol from "../shared/TraitSymbol/TraitSymbol";
 
 function Traits(props) {
 
     // iconPath call with parameter "trait" to save the object of Trait icon paths to traitIcons
-    const traitIcons = iconPath("trait");
-    const traitIconsSvg = iconPath("trait_svg"); // TODO: figure out how to use "bg.png" as a background for trait svg symbols
+    const traitIconsSvg = iconPath("trait_svg"); 
 
     // levelHierarchy contains the possible active trait level values in ascending order from lowest to highest level
     // levelHierarchy is used by compareTraitLevels to determine which level an active trait has
@@ -32,7 +32,7 @@ function Traits(props) {
         //          -- {0}: trait1 and trait2 have the same trait level, so they should be sorted alphabetically with localeCompare
         let traitOrder = compareTraitLevels(trait1, trait2);
 
-        return traitOrder != 0 ? traitOrder : trait1[0].localeCompare(trait2[0]);
+        return traitOrder !== 0 ? traitOrder : trait1[0].localeCompare(trait2[0]);
     }
 
     // getTraitLevel is called when props.activeTraits is sorted from highest active level to lowest (endstate)
@@ -98,22 +98,43 @@ function Traits(props) {
         return 0;
     }    
 
-    return (Object.keys(props.activeTraits).length === 0 ? <div>Please add units to the board to view active traits</div> : 
-        <div className="">
+    return (props.teamCompDisplay ? 
+        <React.Fragment>
             {orderedTraits.map(([trait, count]) => {
                 const activeTrait = traits.find(traitInfo => traitInfo.key === trait);
-                return (
-                    <Trait 
-                        key={activeTrait.key}
-                        traitInfo={activeTrait}
-                        count={count}
-                        traitStyle={getTraitLevel(trait, count)} // temporary styling while figuring out .svg symbol with bg.png backgrounds
-                        iconPath={traitIconsSvg[activeTrait.name.toLowerCase()]}
-                        traitLevel={traitIconsSvg[getTraitLevel(trait, count)]}
-                    />
-                );
+                if (getTraitLevel(trait, count) !== "inactive") {
+                    return (
+                        <TraitSymbol 
+                            key={activeTrait.key}
+                            traitInfo={activeTrait}
+                            iconPath={traitIconsSvg[activeTrait.name.toLowerCase()]}
+                            traitLevel={traitIconsSvg[getTraitLevel(trait, count)]}
+                            classNames={props.classNames}
+                            teamCompDisplay={props.teamCompDisplay}
+                        />
+                    );
+                }
             })}
-        </div>
+        </React.Fragment> : 
+        <React.Fragment>
+            {Object.keys(props.activeTraits).length === 0 ? 
+                <div>Please add units to the board to view active traits</div> : 
+                <div className="">
+                    {orderedTraits.map(([trait, count]) => {
+                        const activeTrait = traits.find(traitInfo => traitInfo.key === trait);
+                        return (
+                            <Trait 
+                                key={activeTrait.key}
+                                traitInfo={activeTrait}
+                                count={count}
+                                iconPath={traitIconsSvg[activeTrait.name.toLowerCase()]}
+                                traitLevel={traitIconsSvg[getTraitLevel(trait, count)]}
+                                classNames={props.classNames}
+                            />
+                        );
+                    })}
+                </div>}
+        </React.Fragment>
     );
 }
 

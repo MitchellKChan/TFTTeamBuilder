@@ -6,10 +6,12 @@ import { useHttpClient } from "../../../shared/hooks/httpHook";
 import ErrorModal from "../../../shared/UIElements/ErrorModal";
 import LoadingSpinner from "../../../shared/UIElements/LoadingSpinner";
 import Modal from "../../../shared/UIElements/Modal";
+import Traits from "../../Traits";
+import TeamCompUnitsList from "./TeamCompUnitsList";
 
-import "./TeamCompItem.css";
+import "./TeamComp.css";
 
-function TeamCompItem(props) {
+function TeamComp(props) {
     const auth = useContext(AuthContext);
     const { isLoading, errorMessage, sendRequest, clearErrorMessage } = useHttpClient();
 
@@ -58,34 +60,26 @@ function TeamCompItem(props) {
             >
                 <p>Do you want to proceed and delete this team composition?  This cannot be undone once confirmed.</p>
             </Modal>
-            <div className="team-comp-item ml-3 mb-3">
-                <h3>{props.compName}</h3>
-                {/* <TeamCompItemTraits /> */}
-                <ul className="d-inline-block align-middle px-5">
-                    {Object.keys(props.traits).map(trait => {
-                        return (
-                            <li key={trait}>{trait}</li>
-                        );
-                    }) }
-                </ul>
-                {/* <TeamCompItemUnits /> */}
-                <ul className="d-inline-block align-middle px-5">
-                    {Object.keys(props.unitsOnBoard).map(unit => {
-                        return (
-                            <li key={unit}>{unit}</li>
-                        );
-                    }) }
-                </ul>
-                <Link to={`/teambuilder/${props.id}`} className="d-inline-block align-middle px-5">
-                    <button className="mr-1 btn btn-secondary btn-sm">Open in Team Builder</button>
+            <div className="team-comp-item ml-3 mb-3 p-3">
+                <h3 className="">{props.compName}</h3>
+                <div className="mb-3">
+                    <div className="d-inline-block align-middle px-2">
+                        <Traits activeTraits={props.traits} teamCompDisplay classNames="d-inline-block align-middle" />
+                    </div>
+                    <div className="d-inline-block align-middle px-2">
+                        <TeamCompUnitsList boardState={props.boardState} />
+                    </div>
+                </div>
+                <Link to={`/teambuilder/${props.id}`} className="">
+                    <button className="btn btn-secondary btn-sm">Open in Team Builder</button>
                 </Link>
-                {auth.isLoggedIn && <Link to={`/teamcomps/${props.creator}`} className="d-inline-block align-middle px-5">
-                    <button className="mr-1 btn btn-secondary btn-sm">{props.creator}</button>
+                {auth.isLoggedIn && <Link to={`/teamcomps/${props.creator}`} className="px-2">
+                    <button className="btn btn-secondary btn-sm">{props.creator}</button>
                 </Link>}
-                {auth.isLoggedIn && auth.userId === props.userId && <button onClick={showDeleteWarning} className="d-inline-block align-middle px-5">Delete</button>}
+                {auth.isLoggedIn && auth.userId === props.userId && <button onClick={showDeleteWarning} className="btn btn-outline-danger btn-sm">Delete</button>}
             </div>
         </React.Fragment>
     );
 }
 
-export default TeamCompItem;
+export default TeamComp;

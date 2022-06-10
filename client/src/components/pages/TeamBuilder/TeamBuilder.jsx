@@ -365,7 +365,7 @@ function TeamBuilder(props) {
                 <div className="mb-3">{props.loadedTeamComp.compName}</div>
                 <div className="row">
                     <div className="col-xl-2 traits">
-                        <Traits activeTraits={appState.traits}/>
+                        <Traits activeTraits={appState.traits} classNames={"d-inline-block align-middle px-1"} />
                     </div>
                     <div className="col-xl-10">
                         <div className="row pb-3">
