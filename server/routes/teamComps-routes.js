@@ -17,7 +17,6 @@ router.use(checkAuth);
 router.post(
     "/",
     [
-        check("userId").not().isEmpty(),
         check("compName").not().isEmpty(),
         check("set").not().isEmpty(),
         check("boardState").not().isEmpty(),

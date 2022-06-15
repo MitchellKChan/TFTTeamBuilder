@@ -2,6 +2,7 @@ const { validationResult } = require("express-validator");
 const mongoose = require("mongoose");
 
 const genEmptyBoard = require("../modules/genEmptyBoard");
+const validateBoardSave = require("../modules/validateBoardSave");
 const TeamComp = require("../models/teamComp");
 const User = require("../models/user");
 
@@ -76,11 +77,16 @@ async function createTeamComp(req, res, next) {
         ); 
     }
 
-    const { userId, creator, compName, set, boardState, unitsOnBoard, traits } = req.body;
+    const { compName, set, boardState, unitsOnBoard, traits } = req.body;
+
+    if (!validateBoardSave(boardState, unitsOnBoard, traits)) {
+        const error = new HttpError("Saved team compositions require at least one unit; please add a unit to the board and try again.", 500);
+        return next(error);
+    }
 
     const createdTeamComp = new TeamComp({
-        userId,
-        creator,
+        userId: req.userData.userId,
+        creator: req.userData.username,
         compName,
         set,
         boardState,
@@ -90,7 +96,7 @@ async function createTeamComp(req, res, next) {
 
     let user;
     try {
-        user = await User.findById(userId);
+        user = await User.findById(req.userData.userId);
     } catch (err) {
         const error = new HttpError("Fetching user failed; please try again", 500);
         return next(error);
@@ -129,6 +135,16 @@ async function updateTeamComp(req, res, next) {
         return next(error);
     }
 
+    if (updatedTeamComp.userId.toString() !== req.userData.userId) {
+        const error = new HttpError("You are not allowed to update this team composition.", 401);
+        return next(error);
+    }
+
+    if (!validateBoardSave(boardState, unitsOnBoard, traits)) {
+        const error = new HttpError("Updated team compositions require at least one unit; please add a unit to the board and try again.", 500);
+        return next(error);
+    }
+
     updatedTeamComp.compName = compName;
     updatedTeamComp.boardState = boardState,
     updatedTeamComp.unitsOnBoard = new Map(Object.entries(unitsOnBoard));
@@ -162,6 +178,11 @@ async function deleteTeamComp(req, res, next) {
         return next(error);
     }
 
+    if (teamComp.userId.id !== req.userData.userId) {
+        const error = new HttpError("You are not allowed to delete this team composition.", 401);
+        return next(error);
+    }
+
     try {
         const session = await mongoose.startSession();
         session.startTransaction();
@@ -171,7 +192,6 @@ async function deleteTeamComp(req, res, next) {
         await session.commitTransaction();
     } catch (err) {
         const error = new HttpError("Could not delete team composition, please try again.", 500);
-        console.log(err);
         return next(error);
     }
 

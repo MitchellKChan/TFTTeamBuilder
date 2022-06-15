@@ -1,5 +1,6 @@
 body {
     background-color: #373737;
+    /* background-color: var(--bs-gray-800); */
     color: #ffffff;
     --cost1: #808080; /* 1-cost color for unit border and hex background */
     --cost2: #11b288; /* 2-cost color for unit border and hex background */
@@ -11,6 +12,10 @@ body {
 .app-title {
     text-align: center;
     font-size: 3em;
+}
+
+.main-header {
+    background-color: var(--bs-blue);
 }
 
 .error-message {
@@ -31,7 +36,12 @@ body {
 
 .description-title {
     font-size: 1.5em;
+    text-align: center;
     margin: auto;
+}
+
+.description-bullets {
+    padding: 0 2rem;
 }
 
 /* Start Clippath hex styling method */
@@ -42,6 +52,9 @@ body {
     --s: 80px;  /* size  */
     --m: 4px;   /* margin */
     --f: calc(var(--s) * 1.732 + 4 * var(--m) - 1px); /* height of two hexagons (including their margins), minus twice the overlap */
+    max-width: 660px;
+    margin-left: auto;
+    margin-right: auto;
 }
   
 .board-container {
@@ -167,7 +180,7 @@ body {
 }
 
 .units {
-    max-height: 45em;
+    max-height: 35em;
     overflow: auto;
 }
 

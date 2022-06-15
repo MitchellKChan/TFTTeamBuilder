@@ -50,7 +50,7 @@ function Items(props) {
                         key={item.id}
                         iconPath={itemIcons[item.id]}
                         itemInfo={item}
-                        displayClasses={"d-inline-block mr-md-1 mb-md-1 items-item"}
+                        displayClasses={"d-inline-block me-1 mb-1 items-item"}
                         appHandleDrop={props.appHandleDrop}
                         appHandleDrag={props.appHandleDrag}
                     />

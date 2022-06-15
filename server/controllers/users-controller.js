@@ -92,7 +92,7 @@ async function login(req, res, next) {
     }
 
     if (!identifiedUser) {
-        const error = new HttpError("Invalid credentials, could not log you in.", 401);
+        const error = new HttpError("Invalid credentials, could not log you in.", 403);
         return next(error);
     }
 
@@ -105,14 +105,14 @@ async function login(req, res, next) {
     }
 
     if (!isValidPassword) {
-        const error = new HttpError("Invalid credentials, could not log you in.", 401);
+        const error = new HttpError("Invalid credentials, could not log you in.", 403);
         return next(error);
     }
 
     let token;
     try {
         token = jwt.sign(
-            {userId: identifiedUser.id, email: identifiedUser.email}, 
+            {userId: identifiedUser.id, email: identifiedUser.email, username: identifiedUser.username}, 
             "privateKey", 
             { expiresIn: "1h" }
         );
@@ -121,7 +121,6 @@ async function login(req, res, next) {
         return next(error);
     }
 
-    // res.json({ message: "Logged in successfully!", loggedInUser: identifiedUser.toObject({ getters: true }) });
     res.json({
         username: identifiedUser.username,
         userId: identifiedUser.id,

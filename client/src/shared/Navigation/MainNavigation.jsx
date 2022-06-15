@@ -5,7 +5,7 @@ import NavLinks from "./NavLinks";
 
 function MainNavigation() {
     return (
-        <MainHeader>
+        <MainHeader classNames="main-header">
             <div className="container-fluid">
                 <div className="navbar-brand">
                     <Link className="text-light" to="/" >TFT Team Builder - Set 5.5</Link>

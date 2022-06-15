@@ -29,7 +29,7 @@ function TeamBuilderLoader() {
         <React.Fragment>
             <ErrorModal error={errorMessage} onClear={clearErrorMessage} />
             {isLoading && <LoadingSpinner asOverlay />}
-            {!isLoading && loadedTeamComp && <TeamBuilder loadedTeamComp={loadedTeamComp} />}
+            {!isLoading && loadedTeamComp && <TeamBuilder loadedTeamComp={loadedTeamComp} teamCompId={teamCompId} />}
         </React.Fragment>
     );
 }

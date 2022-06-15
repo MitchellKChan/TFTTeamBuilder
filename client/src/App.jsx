@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 import { BrowserRouter, Route, Navigate, Routes } from "react-router-dom";
 
 import Home from "./components/pages/Home/Home";
@@ -8,21 +8,10 @@ import MainNavigation from "./shared/Navigation/MainNavigation";
 import Auth from "./components/pages/Users/Auth";
 import { AuthContext } from "./shared/context/authContext";
 import TeamBuilderLoader from "./components/pages/TeamBuilder/TeamBuilderLoader";
+import { useAuth } from "./shared/hooks/authHook";
 
 function App() {
-    const [token, updateToken] = useState(false);
-    const [userId, updateUserId] = useState(null);
-    const [username, updateUsername] = useState(null);
-    const login = useCallback((userId, username, token) => {
-        updateToken(token);
-        updateUserId(userId);
-        updateUsername(username);
-    }, []);
-    const logout = useCallback(() => {
-        updateToken(null);
-        updateUserId(null);
-        updateUsername(null);
-    }, []);
+    const { token, login, logout, userId, username } = useAuth();
 
     let routes;
 

@@ -34,17 +34,15 @@ function TeamBuilder(props) {
         if (auth.isLoggedIn){
             updateSaveForm(true);
         } else {
-            updateSaveError("You must be logged in before saving a team composition.");
+            updateSaveError("You must be logged in before saving or updating a team composition.");
         }
     }
-    function cancelSaveForm() {
-        updateSaveForm(false);
-    }
-    function confirmSave() {
+    function closeSaveForm() {
         updateSaveForm(false);
     }
     function clearSaveError() {
         updateSaveError(null);
+        clearErrorMessage();
     }
 
     const navigate = useNavigate(); // redirect to newly created team composition in team builder
@@ -58,8 +56,6 @@ function TeamBuilder(props) {
                 "http://localhost:3001/api/teamComps",
                 "POST",
                 JSON.stringify({
-                    userId: auth.userId,
-                    creator: auth.username,
                     compName: formState.inputs.compName.value,
                     set: "Set5",
                     boardState: appState.boardState,
@@ -71,11 +67,35 @@ function TeamBuilder(props) {
                     Authorization: "Bearer " + auth.token
                 }
             );
-            confirmSave();
             navigate(`/teamcomps/${auth.username}`);
         } catch (err) {
             // error handling is done in sendRequest
         }
+        closeSaveForm();
+    }
+    async function updateSubmitHandler(event) {
+        event.preventDefault();
+        
+        try {
+            await sendRequest(
+                `http://localhost:3001/api/teamComps/${props.teamCompId}`,
+                "PATCH",
+                JSON.stringify({
+                    compName: formState.inputs.compName.value,
+                    boardState: appState.boardState,
+                    unitsOnBoard: appState.unitsOnBoard,
+                    traits: appState.traits
+                }),
+                {
+                    "Content-Type": "application/json", 
+                    Authorization: "Bearer " + auth.token
+                }
+            );
+            navigate(`/teamcomps/${auth.username}`);
+        } catch (err) {
+            // error handling is done in sendRequest
+        }
+        closeSaveForm();
     }
 
     // useState object to manage overall state of the application
@@ -91,13 +111,13 @@ function TeamBuilder(props) {
     // trigger diplaying an error message when an erroneous action has occurred
     let errorMessageClasses = appState.errorMessage === "" ? "invisible" : "visible";
     // className strings for how to display Unit Components and Item Components
-    let nameButtonClasses = appState.showUnitsBy === "Name" ? "mr-1 btn btn-secondary btn-sm" : "mr-1 btn btn-outline-secondary btn-sm";
-    let costButtonClasses = appState.showUnitsBy === "Cost" ? "mr-1 btn btn-secondary btn-sm" : "mr-1 btn btn-outline-secondary btn-sm";
-    let originButtonClasses = appState.showUnitsBy === "Origin" ? "mr-1 btn btn-secondary btn-sm" : "mr-1 btn btn-outline-secondary btn-sm";
-    let classButtonClasses = appState.showUnitsBy === "Class" ? "mr-1 btn btn-secondary btn-sm" : "mr-1 btn btn-outline-secondary btn-sm";
-    let craftableButtonClasses = appState.showItemsBy === "Craftable" ? "mr-1 btn btn-secondary btn-sm" : "mr-1 btn btn-outline-secondary btn-sm";
-    let tomeEmblemsButtonClasses = appState.showItemsBy === "Tome Emblems" ? "mr-1 btn btn-secondary btn-sm" : "mr-1 btn btn-outline-secondary btn-sm";
-    let radiantButtonClasses = appState.showItemsBy === "Radiant" ? "mr-1 btn btn-secondary btn-sm" : "mr-1 btn btn-outline-secondary btn-sm";
+    let nameButtonClasses = appState.showUnitsBy === "Name" ? "me-1 btn btn-secondary btn-sm" : "me-1 btn btn-outline-secondary btn-sm";
+    let costButtonClasses = appState.showUnitsBy === "Cost" ? "me-1 btn btn-secondary btn-sm" : "me-1 btn btn-outline-secondary btn-sm";
+    let originButtonClasses = appState.showUnitsBy === "Origin" ? "me-1 btn btn-secondary btn-sm" : "me-1 btn btn-outline-secondary btn-sm";
+    let classButtonClasses = appState.showUnitsBy === "Class" ? "me-1 btn btn-secondary btn-sm" : "me-1 btn btn-outline-secondary btn-sm";
+    let craftableButtonClasses = appState.showItemsBy === "Craftable" ? "me-1 btn btn-secondary btn-sm" : "me-1 btn btn-outline-secondary btn-sm";
+    let tomeEmblemsButtonClasses = appState.showItemsBy === "Tome Emblems" ? "me-1 btn btn-secondary btn-sm" : "me-1 btn btn-outline-secondary btn-sm";
+    let radiantButtonClasses = appState.showItemsBy === "Radiant" ? "me-1 btn btn-secondary btn-sm" : "me-1 btn btn-outline-secondary btn-sm";
     function appHandleDrop(dragOrigin, targetHexId) {
         let newAppState = appState;
         let updatedHex = {};
@@ -333,17 +353,22 @@ function TeamBuilder(props) {
 
     return (
         <React.Fragment>
-            <ErrorModal error={saveError} onClear={clearSaveError}/>
+            <ErrorModal error={auth.isLoggedIn ? errorMessage : saveError} onClear={clearSaveError}/>
             {auth.isLoggedIn && 
                 <Modal 
                     show={showSaveForm}
-                    onCancel={cancelSaveForm}
-                    header="What name would you like this new team composition to have?" 
+                    onCancel={closeSaveForm}
+                    header="What name would you like this team composition to have?" 
                     footerClass="" 
                     footer={
                         <React.Fragment>
-                            <button onClick={cancelSaveForm}>Cancel</button>
-                            <button disabled={!formState.isValid} onClick={saveSubmitHandler}>Save</button>
+                            <button onClick={closeSaveForm}>Cancel</button>
+                            <button 
+                                disabled={!formState.isValid} 
+                                onClick={props.teamCompId ? updateSubmitHandler : saveSubmitHandler}
+                            >
+                                {props.teamCompId ? "Update" : "Save"}
+                            </button>
                         </React.Fragment>
                     }
                 >
@@ -364,12 +389,12 @@ function TeamBuilder(props) {
             <div className="container mt-3">
                 <div className="mb-3">{props.loadedTeamComp.compName}</div>
                 <div className="row">
-                    <div className="col-xl-2 traits">
+                    <div className="col-2 traits">
                         <Traits activeTraits={appState.traits} classNames={"d-inline-block align-middle px-1"} />
                     </div>
-                    <div className="col-xl-10">
+                    <div className="col-10">
                         <div className="row pb-3">
-                            <div className="col-lg-9">
+                            <div className="col-8 board-section">
                                 <Board 
                                     key={appState}
                                     boardState={appState.boardState} 
@@ -377,9 +402,9 @@ function TeamBuilder(props) {
                                     appHandleDrag={appHandleDrag}
                                 />
                             </div>
-                            <div className="col-lg-3">
+                            <div className="col-4">
                                 <div>
-                                    <button className="btn btn-outline-success btn-sm save-button" onClick={displaySaveForm}>Save</button>
+                                    <button className="btn btn-outline-success btn-sm save-button" onClick={displaySaveForm}>{props.teamCompId ? "Update" : "Save"}</button>
                                 </div>
                             </div>
                         </div>
@@ -389,7 +414,7 @@ function TeamBuilder(props) {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-xl-8">
+                            <div className="col-8">
                                 <div className="mb-md-2">
                                     <button type="button" className={nameButtonClasses} onClick={selectUnitSort}>Name</button>
                                     <button type="button" className={costButtonClasses} onClick={selectUnitSort}>Cost</button>
@@ -403,7 +428,7 @@ function TeamBuilder(props) {
                                     appHandleDrag={appHandleDrag} 
                                 />
                             </div>
-                            <div className="col-xl-4">
+                            <div className="col-4">
                                 <div className="pb-2 row">
                                     <div className="mb-md-2">
                                         <button type="button" className={craftableButtonClasses} onClick={selectItemSort}>Craftable</button>
@@ -419,7 +444,7 @@ function TeamBuilder(props) {
                                 </div>
                                 <div className="row trait">
                                     <div className="description-title">TFT Team Builder Usage</div>
-                                    <ul>
+                                    <ul className="description-bullets">
                                         <li>Units can be placed on the board by dragging them to a hex</li>
                                         <li>Items can be equipped to units by dragging them an occupied hex</li>
                                         <li>Units can be removed from the board by dragging them to the units area</li>
