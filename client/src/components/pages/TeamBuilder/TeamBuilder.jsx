@@ -13,6 +13,7 @@ import { useForm } from "../../../shared/hooks/formHook";
 import { VALIDATOR_MINLENGTH } from "../../../shared/util/validator";
 import { useHttpClient } from "../../../shared/hooks/httpHook";
 import LoadingSpinner from "../../../shared/UIElements/LoadingSpinner";
+import Card from "../../../shared/UIElements/Card";
 
 
 function TeamBuilder(props) {
@@ -108,6 +109,7 @@ function TeamBuilder(props) {
         showItemsBy: "Craftable", // string that notes how Items Components are displayed in the Item Component; default is craftable items
         errorMessage: "" // string explaining what error occurred on the page; is overwritten after the next valid action is processed
     });
+    console.log(appState.boardState);
     // trigger diplaying an error message when an erroneous action has occurred
     let errorMessageClasses = appState.errorMessage === "" ? "invisible" : "visible";
     // className strings for how to display Unit Components and Item Components
@@ -178,13 +180,15 @@ function TeamBuilder(props) {
                     } else {
                         // check if targetHexId has space to receive another item; appState.boardState[targetHexId].unitItems cannot have more than 3 objects
                         if (Object.keys(appState.boardState[targetHexId].unitItems).length < 3) {
-                            newAppState.boardState[targetHexId] = {
-                                ...appState.boardState[targetHexId],
-                                ["unitItems"]: {
-                                    ...appState.boardState[targetHexId].unitItems,
-                                    [appState.heldObj.id]: appState.heldObj // TODO: refactor key to allow multiple non-unique items to be equipped properly
-                                }
-                            };
+                            const { prevHexId, ...itemObj } = appState.heldObj; // remove prevHexId attribute to only push necessary info in itemObj
+                            newAppState.boardState[targetHexId].unitItems.push(itemObj);
+                            // newAppState.boardState[targetHexId] = {
+                            //     ...appState.boardState[targetHexId],
+                            //     ["unitItems"]: {
+                            //         ...appState.boardState[targetHexId].unitItems,
+                            //         [appState.heldObj.id]: appState.heldObj // TODO: refactor key to allow multiple non-unique items to be equipped properly
+                            //     }
+                            // };
                         } else {
                             newErrorMessage = "A unit cannot be equipped with more than 3 items.";
                         }
@@ -204,12 +208,12 @@ function TeamBuilder(props) {
                     updatedHex = { 
                         hexId: appState.heldObj.hexId,
                         hasUnit: false,
-                        unitId: null,
-                        unitName: null,
+                        unitId: "",
+                        unitName: "",
                         unitCost: null,
-                        unitIcon: null,
-                        unitTraits: null,
-                        unitItems: {}
+                        unitIcon: "",
+                        unitTraits: [],
+                        unitItems: []
                     };                    
 
                     newAppState = removeUnit(newAppState, appState.heldObj);
@@ -326,7 +330,14 @@ function TeamBuilder(props) {
     //      - dragging an Item Component from a BoardHex Component to the Items Component (remove item)
     // removeItem deletes the heldItem from the unitItems object of the heldItem.prevHexId BoardHex Component 
     function removeItem(appState, heldItem) {
-        delete appState.boardState[heldItem.prevHexId].unitItems[heldItem.id];
+        // delete appState.boardState[heldItem.prevHexId].unitItems[heldItem.id];
+        let newEquippedItems = [];
+        for (const item of appState.boardState[heldItem.prevHexId].unitItems) {
+            if (item.id !== heldItem.id) {
+                newEquippedItems.push(item);
+            }
+        }
+        appState.boardState[heldItem.prevHexId].unitItems = newEquippedItems;
 
         return appState;
     }
@@ -394,7 +405,7 @@ function TeamBuilder(props) {
                     </div>
                     <div className="col-10">
                         <div className="row pb-3">
-                            <div className="col-8 board-section">
+                            <div className="col-9">
                                 <Board 
                                     key={appState}
                                     boardState={appState.boardState} 
@@ -402,7 +413,7 @@ function TeamBuilder(props) {
                                     appHandleDrag={appHandleDrag}
                                 />
                             </div>
-                            <div className="col-4">
+                            <div className="col-3">
                                 <div>
                                     <button className="btn btn-outline-success btn-sm save-button" onClick={displaySaveForm}>{props.teamCompId ? "Update" : "Save"}</button>
                                 </div>
@@ -414,7 +425,7 @@ function TeamBuilder(props) {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-8">
+                            <div className="col-9">
                                 <div className="mb-md-2">
                                     <button type="button" className={nameButtonClasses} onClick={selectUnitSort}>Name</button>
                                     <button type="button" className={costButtonClasses} onClick={selectUnitSort}>Cost</button>
@@ -428,11 +439,11 @@ function TeamBuilder(props) {
                                     appHandleDrag={appHandleDrag} 
                                 />
                             </div>
-                            <div className="col-4">
-                                <div className="pb-2 row">
+                            <div className="col-3">
+                                <div className="row">
                                     <div className="mb-md-2">
                                         <button type="button" className={craftableButtonClasses} onClick={selectItemSort}>Craftable</button>
-                                        <button type="button" className={tomeEmblemsButtonClasses} onClick={selectItemSort}>Tome Emblems</button>
+                                        <button type="button" className={tomeEmblemsButtonClasses} onClick={selectItemSort}>Emblems</button>
                                         <button type="button" className={radiantButtonClasses} onClick={selectItemSort}>Radiant</button>
                                     </div>
                                     <Items 
@@ -442,14 +453,16 @@ function TeamBuilder(props) {
                                         appHandleDrag={appHandleDrag}
                                     />
                                 </div>
-                                <div className="row trait">
-                                    <div className="description-title">TFT Team Builder Usage</div>
-                                    <ul className="description-bullets">
-                                        <li>Units can be placed on the board by dragging them to a hex</li>
-                                        <li>Items can be equipped to units by dragging them an occupied hex</li>
-                                        <li>Units can be removed from the board by dragging them to the units area</li>
-                                        <li>Items can be removed from the board by dragging them to the items area</li>
-                                    </ul>
+                                <div className="row">
+                                    <Card className="trait">
+                                        <div className="description-title">TFT Team Builder Usage</div>
+                                        <ul className="description-bullets">
+                                            <li>Units can be placed on the board by dragging them to a hex</li>
+                                            <li>Items can be equipped to units by dragging them an occupied hex</li>
+                                            <li>Units can be removed from the board by dragging them to the units area</li>
+                                            <li>Items can be removed from the board by dragging them to the items area</li>
+                                        </ul>
+                                    </Card>
                                 </div>
                             </div>
                         </div>

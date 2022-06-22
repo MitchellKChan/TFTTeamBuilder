@@ -9,7 +9,7 @@ function Trait(props) {
         nextBreakpoint = props.traitInfo.sets[traitLevel++];
     }
     return (
-        <div className={"trait p-2 my-3"}>
+        <div className={"trait"}>
             <TraitSymbol 
                 traitLevel={props.traitLevel}
                 iconPath={props.iconPath}

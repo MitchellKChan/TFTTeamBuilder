@@ -3,6 +3,7 @@ import Trait from "./Trait";
 import traits from "../set5patch1115/traits.json";
 import iconPath from "../iconPaths";
 import TraitSymbol from "../shared/TraitSymbol/TraitSymbol";
+import Card from "../shared/UIElements/Card";
 
 function Traits(props) {
 
@@ -118,8 +119,8 @@ function Traits(props) {
         </React.Fragment> : 
         <React.Fragment>
             {Object.keys(props.activeTraits).length === 0 ? 
-                <div>Please add units to the board to view active traits</div> : 
-                <div className="">
+                <Card className="message">Please add units to the board to view active traits</Card> : 
+                <div>
                     {orderedTraits.map(([trait, count]) => {
                         const activeTrait = traits.find(traitInfo => traitInfo.key === trait);
                         return (

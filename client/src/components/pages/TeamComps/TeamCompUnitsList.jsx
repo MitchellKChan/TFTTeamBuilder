@@ -1,6 +1,7 @@
 import React from "react";
 import iconPath from "../../../iconPaths";
 import UnitIcon from "../../../shared/UnitIcon/UnitIcon";
+import Item from "../../Item";
 
 function TeamCompUnitsList(props) {
     // iconPath call with parameter "unit" to save the object of Unit icon paths to unitIcons
@@ -30,13 +31,28 @@ function TeamCompUnitsList(props) {
         <div>
             {orderedUnits.map(unit => {
                 return (
-                    <UnitIcon 
-                        key={unit.unitId}
-                        iconPath={unitIcons[unit.unitId]}
-                        name={unit.unitName}
-                        cost={unit.unitCost}
-                        classNames={"unit teamcomp-unit"}
-                    />
+                    <div className="teamcomp-unit-wrapper">
+                        <UnitIcon 
+                            key={unit.unitId}
+                            iconPath={unitIcons[unit.unitId]}
+                            name={unit.unitName}
+                            cost={unit.unitCost}
+                            classNames="unit teamcomp-unit"
+                            marginClasses="teamcomp-unit-margins"
+                        />
+                        <div className="teamcomp-unit-items">
+                            {Object.entries(unit.unitItems).map(([itemId, item]) => {
+                                return (
+                                    <Item 
+                                        key={item.id}
+                                        iconPath={item.itemIcon}
+                                        itemInfo={item}
+                                        displayClasses={"teamcomp-unit-items-item"}
+                                    />
+                                );
+                            })}
+                        </div>
+                    </div>
                 );
             })}
         </div>

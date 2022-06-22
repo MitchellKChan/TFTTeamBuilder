@@ -6,13 +6,13 @@ import "./UserItem.css";
 
 function UserItem(props) {
     return (
-        <div className="mt-3">
+        <div className="user-item">
             <Link to={`/teamcomps/${props.username}`}>
-                <Card className="mb-2 user-item">
-                    <h3>{props.username}</h3>
-                    <h5>
-                        {props.teamComps.length} {props.teamComps.length === 1 ? "Team Comp" : "Team Comps"}
-                    </h5>
+                <Card>
+                    <div className="d-inline-block">{props.username}</div>
+                    <div className="d-inline-block team-comp-count">
+                        {props.teamComps.length} {props.teamComps.length === 1 ? "Team Composition" : "Team Compositions"}
+                    </div>
                 </Card>
             </Link>
         </div>

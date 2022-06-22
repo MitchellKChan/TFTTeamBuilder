@@ -10,6 +10,7 @@ import Traits from "../../Traits";
 import TeamCompUnitsList from "./TeamCompUnitsList";
 
 import "./TeamComp.css";
+import Card from "../../../shared/UIElements/Card";
 
 function TeamComp(props) {
     const auth = useContext(AuthContext);
@@ -60,24 +61,34 @@ function TeamComp(props) {
             >
                 <p>Do you want to proceed and delete this team composition?  This cannot be undone once confirmed.</p>
             </Modal>
-            <div className="team-comp-item ml-3 mb-3 p-3">
-                <h3 className="">{props.compName}</h3>
-                <div className="mb-3">
-                    <div className="d-inline-block align-middle px-2">
-                        <Traits activeTraits={props.traits} teamCompDisplay classNames="d-inline-block align-middle" />
-                    </div>
-                    <div className="d-inline-block align-middle px-2">
-                        <TeamCompUnitsList boardState={props.boardState} />
-                    </div>
+            <Card>
+                <div className="team-comp-name-section d-inline-block align-middle">
+                    <div>{props.compName}</div>
+                    {auth.isLoggedIn && 
+                        <div>by <Link to={`/teamcomps/${props.creator}`} className="">
+                                {props.creator}
+                            </Link>
+                        </div>
+                    }
                 </div>
-                <Link to={`/teambuilder/${props.id}`} className="">
-                    <button className="btn btn-secondary btn-sm">Open in Team Builder</button>
-                </Link>
-                {auth.isLoggedIn && <Link to={`/teamcomps/${props.creator}`} className="px-2">
-                    <button className="btn btn-secondary btn-sm">{props.creator}</button>
-                </Link>}
-                {auth.isLoggedIn && auth.userId === props.userId && <button onClick={showDeleteWarning} className="btn btn-outline-danger btn-sm">Delete</button>}
-            </div>
+                <div className="team-comp-traits-section d-inline-block align-middle">
+                    <Traits activeTraits={props.traits} teamCompDisplay classNames="d-inline-block align-middle" />
+                </div>
+                <div className="team-comp-units-section d-inline-block align-middle">
+                    <TeamCompUnitsList boardState={props.boardState} />
+                </div>
+                <div className="team-comp-button-wrapper d-inline-block align-middle">
+                    <Link to={`/teambuilder/${props.id}`}>
+                        <button className="team-comp-button btn btn-secondary btn-sm">Open in Team Builder</button>
+                    </Link>
+                    {auth.isLoggedIn && auth.userId === props.userId && 
+                        <button onClick={showDeleteWarning} className="team-comp-button btn btn-outline-danger btn-sm">
+                            Delete
+                        </button>
+                    }
+                </div>
+
+            </Card>
         </React.Fragment>
     );
 }

@@ -15,7 +15,7 @@ function displayItems(grouping) {
     // Return value is a filtered array of "items" imported from items.json depending on the value of "grouping"
 
     switch (grouping) {
-        case "Tome Emblems": // "Tome Emblems" passed when the Tome Emblems button is selected in App.jsx
+        case "Emblems": // "Tome Emblems" passed when the Tome Emblems button is selected in App.jsx
             return items.filter((item) => {
                 return item.isElusive;
             });

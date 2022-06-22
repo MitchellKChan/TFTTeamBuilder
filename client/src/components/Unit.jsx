@@ -25,7 +25,8 @@ function Unit(props) {
             teamBuilderDisplay
             name={props.unitInfo.name}
             iconPath={props.iconPath}
-            classNames={"unit teambuilder-unit"}
+            classNames="unit teambuilder-unit"
+            marginClasses="teambuilder-unit-margins"
         />
     );
 }

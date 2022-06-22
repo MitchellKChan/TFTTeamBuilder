@@ -18,9 +18,13 @@ const teamCompSchema = new Schema({
             unitTraits: { type: [String], default: undefined },
             unitItems: { type: [
                 {
-                    iconPath: { type: String },
-                    itemInfo: { type: String },
-                    equippedHexId: { type: Number },
+                    description: { type: String },
+                    id: { type: Number },
+                    isElusive: { type: Boolean },
+                    isRadiant: { type: Boolean },
+                    isUnique: { type: Boolean },
+                    itemIcon: { type: String },
+                    name: { type: String }
                 }
             ], default: undefined }
         }

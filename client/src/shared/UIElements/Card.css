@@ -1,8 +1,14 @@
-.card {
-    position: relative;
-    margin: 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-    border-radius: 6px;
-    padding: 1rem;
-    overflow: hidden;
+.custom-card {
+    /* position: relative; */
+    /* margin: 0; */
+    /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26); */
+    /* border-radius: 6px; */
+    /* padding: 1rem; */
+    /* overflow: hidden; */
+    border-style: solid;
+    border-width: 0.1em;
+    border-color: var(--bs-gray-700);
+    background-color: var(--bs-gray-900);
+    margin-bottom: 1em;
+    padding: 1em;
 }

@@ -1,6 +1,12 @@
 .authentication__header {
-    color: white;
-    text-align: center;
+    /* color: white; */
+}
+
+.hr-class {
+    border-style: solid;
+    border-width: 1px;
+    border-color: white;
+    opacity: 100%;
 }
 
 .authentication {
@@ -8,7 +14,6 @@
     max-width: 25rem;
     margin: 7rem auto;
     text-align: center;
-    color: black;
 }
 
 .authentication form {

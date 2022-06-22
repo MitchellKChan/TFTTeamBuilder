@@ -11,7 +11,7 @@ function UsersList(props) {
     }
 
     return (
-        <div>
+        <div className="mt-3 container">
             {props.items.map(user => {
                 return <UserItem 
                     key={user.id}

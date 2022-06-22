@@ -8,7 +8,7 @@ function UnitIcon(props) {
     const costBorder = (props.classNames + " cost-" + props.cost.toString());
 
     return (
-        <div className="d-inline-block me-1 mb-1">
+        <div className={"icon-wrapper " + props.marginClasses}>
             <div 
                 className={costBorder} 
                 draggable={props.teamBuilderDisplay} 

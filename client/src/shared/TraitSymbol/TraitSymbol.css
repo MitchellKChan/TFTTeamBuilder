@@ -1,6 +1,6 @@
 .teamcomp-trait-level {
-    height: 2.3em;
-    width: 2.3em;
+    height: 2em;
+    width: 2em;
     background-repeat: no-repeat;
     background-size: contain;
     justify-content: center;
@@ -9,8 +9,8 @@
 }
 
 .teamcomp-trait-level img {
-    max-height: 1.3em;
-    max-width: 1.3em;
+    max-height: 1.1em;
+    max-width: 1.1em;
 }
 
 .teambuilder-trait-level {

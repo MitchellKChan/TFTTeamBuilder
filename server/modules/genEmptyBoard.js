@@ -12,7 +12,7 @@ function genEmptyBoard() {
             unitCost: null,
             unitIcon: "",
             unitTraits: [],
-            unitItems: {}
+            unitItems: []
         });
     }
 

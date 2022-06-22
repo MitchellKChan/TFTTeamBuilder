@@ -87,9 +87,9 @@ function Auth() {
             <ErrorModal error={errorMessage} onClear={clearErrorMessage} />
             <Card className="authentication">
                 {isLoading && <LoadingSpinner asOverlay />}
-                <h2>Login Required</h2>
-                <hr/>
-                <form onSubmit={authSubmitHandler}>
+                <h2 className="authentication__header">Login Required</h2>
+                <hr className="hr-class"/>
+                <form onSubmit={authSubmitHandler} autoComplete="off">
                     {!isLoginMode && (
                         <Input 
                             element="input"
@@ -119,9 +119,9 @@ function Auth() {
                         errorText="Please enter a valid password with at least 8 characters."
                         onInput={updateFormState}
                     />
-                    <button type="submit" disabled={!formState.isValid}>{isLoginMode ? "Login" : "Signup"}</button>
+                    <button type="submit" className="btn btn-light" disabled={!formState.isValid}>{isLoginMode ? "Login" : "Signup"}</button>
                 </form>
-                <button onClick={switchModeHandler}>Switch to {isLoginMode ? "Signup" : "Login"}</button>
+                <button className="btn btn-outline-light" onClick={switchModeHandler}>Switch to {isLoginMode ? "Signup" : "Login"}</button>
             </Card>
         </React.Fragment>
     );

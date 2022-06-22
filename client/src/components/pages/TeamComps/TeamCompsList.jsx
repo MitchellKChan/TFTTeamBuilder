@@ -1,6 +1,8 @@
 import React from "react";
 import TeamComp from "./TeamComp";
 
+import "./TeamComps.css";
+
 function TeamCompsList(props) {
     if (props.items.length === 0) {
         return (
@@ -11,7 +13,7 @@ function TeamCompsList(props) {
     }
 
     return (
-        <div className="mt-3">
+        <div className="team-comps container">
             {props.items.map(teamComp => {
                 return <TeamComp 
                     key={teamComp._id}

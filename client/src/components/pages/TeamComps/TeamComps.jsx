@@ -35,7 +35,12 @@ function TeamComps() {
         <React.Fragment>
             <ErrorModal error={errorMessage} onClear={clearErrorMessage} />
             {isLoading && <LoadingSpinner asOverlay />}
-            {!isLoading && loadedTeamComps && <TeamCompsList items={loadedTeamComps} onDeleteTeamComp={teamCompDeleteHandler} />}
+            {!isLoading && loadedTeamComps && 
+                <TeamCompsList 
+                    items={loadedTeamComps} 
+                    onDeleteTeamComp={teamCompDeleteHandler} 
+                />
+            }
         </React.Fragment>
         
     );

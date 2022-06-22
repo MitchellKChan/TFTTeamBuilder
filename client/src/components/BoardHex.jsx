@@ -69,13 +69,13 @@ function BoardHex(props) {
                 {Object.entries(props.hexState.unitItems).map(([itemId, item]) => {
                     return (
                         <Item 
-                        key={itemId}
-                        iconPath={item.itemIcon}
-                        itemInfo={item}
-                        displayClasses={"hex-items-item"}
-                        equippedHexId={props.hexState.hexId}
-                        appHandleDrop={props.appHandleDrop}
-                        appHandleDrag={props.appHandleDrag}
+                            key={itemId}
+                            iconPath={item.itemIcon}
+                            itemInfo={item}
+                            displayClasses="hex-items-item"
+                            equippedHexId={props.hexState.hexId}
+                            appHandleDrop={props.appHandleDrop}
+                            appHandleDrag={props.appHandleDrag}
                         />
                     );
                 })}
