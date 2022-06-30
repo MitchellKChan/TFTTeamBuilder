@@ -6,8 +6,8 @@ import { useHttpClient } from "../../../shared/hooks/httpHook";
 import ErrorModal from "../../../shared/UIElements/ErrorModal";
 import LoadingSpinner from "../../../shared/UIElements/LoadingSpinner";
 import Modal from "../../../shared/UIElements/Modal";
-import Traits from "../../Traits";
 import TeamCompUnitsList from "./TeamCompUnitsList";
+import TeamCompTraitsList from "./TeamCompTraitsList";
 
 import "./TeamComp.css";
 import Card from "../../../shared/UIElements/Card";
@@ -72,7 +72,7 @@ function TeamComp(props) {
                     }
                 </div>
                 <div className="team-comp-traits-section d-inline-block align-middle">
-                    <Traits activeTraits={props.traits} teamCompDisplay classNames="d-inline-block align-middle" />
+                    <TeamCompTraitsList activeTraits={props.traits} teamCompDisplay classNames="d-inline-block align-middle" />
                 </div>
                 <div className="team-comp-units-section d-inline-block align-middle">
                     <TeamCompUnitsList boardState={props.boardState} />

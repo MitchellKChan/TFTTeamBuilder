@@ -1,5 +1,5 @@
 import React from "react";
-import TraitSymbol from "../shared/TraitSymbol/TraitSymbol";
+import TraitSymbol from "../../../shared/TraitSymbol/TraitSymbol";
 
 function Trait(props) {
 

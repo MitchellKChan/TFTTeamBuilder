@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import Board from "../../Board";
 import Items from "../../Items";
-import Traits from "../../Traits";
+import TeamBuilderTraitsList from "./TeamBuilderTraitsList";
 import Units from "../../Units";
 import Modal from "../../../shared/UIElements/Modal";
 import { AuthContext } from "../../../shared/context/authContext";
@@ -109,7 +109,6 @@ function TeamBuilder(props) {
         showItemsBy: "Craftable", // string that notes how Items Components are displayed in the Item Component; default is craftable items
         errorMessage: "" // string explaining what error occurred on the page; is overwritten after the next valid action is processed
     });
-    console.log(appState.boardState);
     // trigger diplaying an error message when an erroneous action has occurred
     let errorMessageClasses = appState.errorMessage === "" ? "invisible" : "visible";
     // className strings for how to display Unit Components and Item Components
@@ -401,7 +400,7 @@ function TeamBuilder(props) {
                 <div className="mb-3">{props.loadedTeamComp.compName}</div>
                 <div className="row">
                     <div className="col-2 traits">
-                        <Traits activeTraits={appState.traits} classNames={"d-inline-block align-middle px-1"} />
+                        <TeamBuilderTraitsList activeTraits={appState.traits} classNames={"d-inline-block align-middle px-1"} />
                     </div>
                     <div className="col-10">
                         <div className="row pb-3">
