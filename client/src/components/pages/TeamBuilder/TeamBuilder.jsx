@@ -14,6 +14,7 @@ import { VALIDATOR_MINLENGTH } from "../../../shared/util/validator";
 import { useHttpClient } from "../../../shared/hooks/httpHook";
 import LoadingSpinner from "../../../shared/UIElements/LoadingSpinner";
 import Card from "../../../shared/UIElements/Card";
+import DisplayButtonsList from "./DisplayButtonsList";
 
 
 function TeamBuilder(props) {
@@ -105,20 +106,12 @@ function TeamBuilder(props) {
         unitsOnBoard: props.loadedTeamComp.unitsOnBoard, // object of how many of each unit are in a BoardHex state in boardState
         traits: props.loadedTeamComp.traits, // object of active traits of units that are in a BoardHex state in boardState
         heldObj: {}, // state object for whatever is currently being dragged; the state can updated from a Unit, BoardHex, or Item component
-        showUnitsBy: "Name", // string that notes how Unit Components are displayed in the Units Component; default is alphabetically by name
-        showItemsBy: "Craftable", // string that notes how Items Components are displayed in the Item Component; default is craftable items
         errorMessage: "" // string explaining what error occurred on the page; is overwritten after the next valid action is processed
     });
+    const [unitsDisplay, updateUnitsDisplay] = useState("Name");
+    const [itemsDisplay, updateItemsDisplay] = useState("Craftable");
     // trigger diplaying an error message when an erroneous action has occurred
     let errorMessageClasses = appState.errorMessage === "" ? "invisible" : "visible";
-    // className strings for how to display Unit Components and Item Components
-    let nameButtonClasses = appState.showUnitsBy === "Name" ? "me-1 btn btn-secondary btn-sm" : "me-1 btn btn-outline-secondary btn-sm";
-    let costButtonClasses = appState.showUnitsBy === "Cost" ? "me-1 btn btn-secondary btn-sm" : "me-1 btn btn-outline-secondary btn-sm";
-    let originButtonClasses = appState.showUnitsBy === "Origin" ? "me-1 btn btn-secondary btn-sm" : "me-1 btn btn-outline-secondary btn-sm";
-    let classButtonClasses = appState.showUnitsBy === "Class" ? "me-1 btn btn-secondary btn-sm" : "me-1 btn btn-outline-secondary btn-sm";
-    let craftableButtonClasses = appState.showItemsBy === "Craftable" ? "me-1 btn btn-secondary btn-sm" : "me-1 btn btn-outline-secondary btn-sm";
-    let tomeEmblemsButtonClasses = appState.showItemsBy === "Tome Emblems" ? "me-1 btn btn-secondary btn-sm" : "me-1 btn btn-outline-secondary btn-sm";
-    let radiantButtonClasses = appState.showItemsBy === "Radiant" ? "me-1 btn btn-secondary btn-sm" : "me-1 btn btn-outline-secondary btn-sm";
     function appHandleDrop(dragOrigin, targetHexId) {
         let newAppState = appState;
         let updatedHex = {};
@@ -181,13 +174,6 @@ function TeamBuilder(props) {
                         if (Object.keys(appState.boardState[targetHexId].unitItems).length < 3) {
                             const { prevHexId, ...itemObj } = appState.heldObj; // remove prevHexId attribute to only push necessary info in itemObj
                             newAppState.boardState[targetHexId].unitItems.push(itemObj);
-                            // newAppState.boardState[targetHexId] = {
-                            //     ...appState.boardState[targetHexId],
-                            //     ["unitItems"]: {
-                            //         ...appState.boardState[targetHexId].unitItems,
-                            //         [appState.heldObj.id]: appState.heldObj // TODO: refactor key to allow multiple non-unique items to be equipped properly
-                            //     }
-                            // };
                         } else {
                             newErrorMessage = "A unit cannot be equipped with more than 3 items.";
                         }
@@ -329,7 +315,6 @@ function TeamBuilder(props) {
     //      - dragging an Item Component from a BoardHex Component to the Items Component (remove item)
     // removeItem deletes the heldItem from the unitItems object of the heldItem.prevHexId BoardHex Component 
     function removeItem(appState, heldItem) {
-        // delete appState.boardState[heldItem.prevHexId].unitItems[heldItem.id];
         let newEquippedItems = [];
         for (const item of appState.boardState[heldItem.prevHexId].unitItems) {
             if (item.id !== heldItem.id) {
@@ -340,23 +325,11 @@ function TeamBuilder(props) {
 
         return appState;
     }
-    function selectUnitSort(event) {
-        updateAppState(appState => {
-            const newAppState = {
-                ...appState,
-                showUnitsBy: event.target.innerText
-            };
-            return newAppState;
-        });
+    function selectUnitDisplay(event) {
+        updateUnitsDisplay(event.target.innerText);
     }
-    function selectItemSort(event) {
-        updateAppState(appState => {
-            const newAppState = {
-                ...appState,
-                showItemsBy: event.target.innerText
-            };
-            return newAppState;
-        });
+    function selectItemDisplay(event) {
+        updateItemsDisplay(event.target.innerText);
     }
 
 
@@ -425,29 +398,20 @@ function TeamBuilder(props) {
                         </div>
                         <div className="row">
                             <div className="col-9">
-                                <div className="mb-md-2">
-                                    <button type="button" className={nameButtonClasses} onClick={selectUnitSort}>Name</button>
-                                    <button type="button" className={costButtonClasses} onClick={selectUnitSort}>Cost</button>
-                                    <button type="button" className={originButtonClasses} onClick={selectUnitSort}>Origin</button>
-                                    <button type="button" className={classButtonClasses} onClick={selectUnitSort}>Class</button>
-                                </div>
+                                <DisplayButtonsList initialDisplayType="Name" displayTypesList={["Name", "Cost", "Origin", "Class"]} selectedDisplay={unitsDisplay} selectDisplayType={selectUnitDisplay} />
                                 <Units 
                                     heldObj={appState.heldObj}
-                                    showUnitsBy={appState.showUnitsBy}
+                                    showUnitsBy={unitsDisplay}
                                     appHandleDrop={appHandleDrop} 
                                     appHandleDrag={appHandleDrag} 
                                 />
                             </div>
                             <div className="col-3">
                                 <div className="row">
-                                    <div className="mb-md-2">
-                                        <button type="button" className={craftableButtonClasses} onClick={selectItemSort}>Craftable</button>
-                                        <button type="button" className={tomeEmblemsButtonClasses} onClick={selectItemSort}>Emblems</button>
-                                        <button type="button" className={radiantButtonClasses} onClick={selectItemSort}>Radiant</button>
-                                    </div>
+                                    <DisplayButtonsList initialDisplayType="Craftable" displayTypesList={["Craftable", "Emblems", "Radiant"]} selectedDisplay={itemsDisplay} selectDisplayType={selectItemDisplay} />
                                     <Items 
                                         heldObj={appState.heldObj}
-                                        showItemsBy={appState.showItemsBy}
+                                        showItemsBy={itemsDisplay}
                                         appHandleDrop={appHandleDrop} 
                                         appHandleDrag={appHandleDrag}
                                     />

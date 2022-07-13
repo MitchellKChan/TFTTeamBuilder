@@ -66,10 +66,10 @@ function BoardHex(props) {
                 </div>
             </div>
             <div className="hex-items">
-                {Object.entries(props.hexState.unitItems).map(([itemId, item]) => {
+                {props.hexState.unitItems.map( item => {
                     return (
                         <Item 
-                            key={itemId}
+                            key={item.id}
                             iconPath={item.itemIcon}
                             itemInfo={item}
                             displayClasses="hex-items-item"

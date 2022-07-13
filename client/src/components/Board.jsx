@@ -9,9 +9,9 @@ function Board(props) {
         <div className="boardhex-main">
             <div className="board-container">
             {props.boardState.map(hex => {
-                if (!hex.unitIcon) {
+                {/* if (!hex.unitIcon) {
                     hex.unitIcon = unitIcons[hex.unitId];
-                }
+                } */}
                 return (
                     <BoardHex 
                         key={hex.hexId.toString() + hex.unitName}
